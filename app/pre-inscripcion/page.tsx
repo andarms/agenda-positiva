@@ -1348,71 +1348,71 @@ export default function PreInscripcionPage() {
                           <div className="relative">
                             <input
                               type="text"
-                              value={formData.esposa.cedula}
-                              onChange={(e) => handleFamilyMemberCedulaSearch(formData.esposa, e.target.value, updateEsposa)}
+                              value={formData.esposa!.cedula}
+                              onChange={(e) => handleFamilyMemberCedulaSearch(formData.esposa!, e.target.value, updateEsposa)}
                               placeholder="Ingrese número de cédula"
                               className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             />
-                            {formData.esposa.isSearching && (
+                            {formData.esposa!.isSearching && (
                               <div className="absolute right-3 top-2.5">
                                 <div className="animate-spin h-4 w-4 border-2 border-blue-600 border-t-transparent rounded-full"></div>
                               </div>
                             )}
                           </div>
-                          {formData.esposa.isFound && (
+                          {formData.esposa!.isFound && (
                             <p className="text-sm text-green-600 dark:text-green-400 mt-1">
                               ✓ Persona encontrada en el sistema
                             </p>
                           )}
-                          {!formData.esposa.isFound && formData.esposa.cedula.length >= 6 && !formData.esposa.isSearching && (
+                          {!formData.esposa!.isFound && formData.esposa!.cedula.length >= 6 && !formData.esposa!.isSearching && (
                             <p className="text-sm text-orange-600 dark:text-orange-400 mt-1">
                               ⚠ Persona no encontrada - complete la información
                             </p>
                           )}
                         </div>
 
-                        {formData.esposa.isFound ? (
+                        {formData.esposa!.isFound ? (
                           /* Show found person data */
                           <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
                             <h6 className="font-medium text-green-800 dark:text-green-200 mb-2">Información Registrada</h6>
                             <div className="grid grid-cols-2 gap-2 text-sm">
                               <div>
                                 <span className="text-zinc-600 dark:text-zinc-400">Nombre:</span>
-                                <p className="font-medium">{formData.esposa.nombres} {formData.esposa.apellidos}</p>
+                                <p className="font-medium">{formData.esposa!.nombres} {formData.esposa!.apellidos}</p>
                               </div>
                               <div>
                                 <span className="text-zinc-600 dark:text-zinc-400">Celular:</span>
-                                <p className="font-medium">{formData.esposa.celular}</p>
+                                <p className="font-medium">{formData.esposa!.celular}</p>
                               </div>
                             </div>
                           </div>
-                        ) : formData.esposa.cedula.length >= 6 && !formData.esposa.isSearching ? (
+                        ) : formData.esposa!.cedula.length >= 6 && !formData.esposa!.isSearching ? (
                           /* Show registration form for new person */
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <input
                               type="text"
-                              value={formData.esposa.nombres}
+                              value={formData.esposa!.nombres}
                               onChange={(e) => updateEsposa({ nombres: e.target.value })}
                               placeholder="Nombres *"
                               className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             />
                             <input
                               type="text"
-                              value={formData.esposa.apellidos}
+                              value={formData.esposa!.apellidos}
                               onChange={(e) => updateEsposa({ apellidos: e.target.value })}
                               placeholder="Apellidos *"
                               className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             />
                             <input
                               type="tel"
-                              value={formData.esposa.celular}
+                              value={formData.esposa!.celular}
                               onChange={(e) => updateEsposa({ celular: e.target.value })}
                               placeholder="Celular *"
                               className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             />
                             <input
                               type="date"
-                              value={formData.esposa.fechaNacimiento}
+                              value={formData.esposa!.fechaNacimiento}
                               onChange={(e) => updateEsposa({ fechaNacimiento: e.target.value })}
                               className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             />
