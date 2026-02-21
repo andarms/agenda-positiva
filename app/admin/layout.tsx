@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import "./globals.css";
-import { TopNavigation, MobileNavigation } from "./components/Navigation";
+import "../globals.css";
+import { TopNavigation, MobileNavigation } from "../components/Navigation";
 
 export const metadata: Metadata = {
   title: "Portal Intranet - Conferencias",
@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({
-  children,
+  children, 
 }: Readonly<{
   children: React.ReactNode;
 }>) {
