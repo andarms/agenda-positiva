@@ -11,11 +11,12 @@ interface NavigationItem {
 
 const navigation: NavigationItem[] = [
   { name: "Portal", href: "/", icon: "🏠" },
-  { name: "Misiva", href: "/misiva", icon: "📧" },
-  { name: "Pre-inscripción", href: "/pre-inscripcion", icon: "📝" },
-  { name: "Inscripción", href: "/inscripcion", icon: "✅" },
-  { name: "Hospedaje", href: "/hospedaje", icon: "🏨" },
-  { name: "Servicio", href: "/servicio", icon: "🔧" },
+  { name: "Eventos", href: "/admin/eventos", icon: "📅" },
+  { name: "Misiva", href: "/admin/misiva", icon: "📧" },
+  { name: "Pre-inscripción", href: "/admin/pre-inscripcion", icon: "📝" },
+  { name: "Inscripción", href: "/admin/inscripcion", icon: "✅" },
+  { name: "Hospedaje", href: "/admin/hospedaje", icon: "🏨" },
+  { name: "Servicio", href: "/admin/servicio", icon: "🔧" },
 ];
 
 export function TopNavigation() {

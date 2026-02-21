@@ -1,11 +1,11 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "ea6a81a7-b37c-4144-bd4d-6909f21dc245",
+  "id": "18fc0271-9ea1-440d-8a1a-7194247b7046",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
-    "attendance_groups": {
-      "name": "attendance_groups",
+    "eventos": {
+      "name": "eventos",
       "columns": {
         "id": {
           "name": "id",
@@ -14,23 +14,106 @@
           "notNull": true,
           "autoincrement": false
         },
-        "group_leader_id": {
-          "name": "group_leader_id",
-          "type": "integer",
+        "nombre": {
+          "name": "nombre",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "slug": {
+          "name": "slug",
+          "type": "text",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
-        "created_at": {
-          "name": "created_at",
+        "descripcion": {
+          "name": "descripcion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "fecha_inicio": {
+          "name": "fecha_inicio",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "fecha_fin": {
+          "name": "fecha_fin",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "ubicacion": {
+          "name": "ubicacion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "fecha_creacion": {
+          "name": "fecha_creacion",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
           "default": "CURRENT_TIMESTAMP"
         },
-        "updated_at": {
-          "name": "updated_at",
+        "fecha_actualizacion": {
+          "name": "fecha_actualizacion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      },
+      "indexes": {
+        "eventos_slug_unique": {
+          "name": "eventos_slug_unique",
+          "columns": [
+            "slug"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "grupos_asistencia": {
+      "name": "grupos_asistencia",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "lider_grupo_id": {
+          "name": "lider_grupo_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "fecha_creacion": {
+          "name": "fecha_creacion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "fecha_actualizacion": {
+          "name": "fecha_actualizacion",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
@@ -44,8 +127,8 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
-    "events": {
-      "name": "events",
+    "inscripciones": {
+      "name": "inscripciones",
       "columns": {
         "id": {
           "name": "id",
@@ -54,51 +137,67 @@
           "notNull": true,
           "autoincrement": false
         },
-        "name": {
-          "name": "name",
-          "type": "text",
+        "persona_id": {
+          "name": "persona_id",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "description": {
-          "name": "description",
+        "evento_id": {
+          "name": "evento_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "requiere_hospedaje": {
+          "name": "requiere_hospedaje",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "grupo_asistencia_id": {
+          "name": "grupo_asistencia_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "relacion_con_lider": {
+          "name": "relacion_con_lider",
           "type": "text",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
-        "start_date": {
-          "name": "start_date",
+        "estado": {
+          "name": "estado",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": "'pendiente'"
         },
-        "end_date": {
-          "name": "end_date",
+        "necesidades_especiales": {
+          "name": "necesidades_especiales",
           "type": "text",
           "primaryKey": false,
-          "notNull": true,
+          "notNull": false,
           "autoincrement": false
         },
-        "location": {
-          "name": "location",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "created_at": {
-          "name": "created_at",
+        "fecha_creacion": {
+          "name": "fecha_creacion",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
           "default": "CURRENT_TIMESTAMP"
         },
-        "updated_at": {
-          "name": "updated_at",
+        "fecha_actualizacion": {
+          "name": "fecha_actualizacion",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
@@ -107,13 +206,53 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "inscripciones_persona_id_personas_id_fk": {
+          "name": "inscripciones_persona_id_personas_id_fk",
+          "tableFrom": "inscripciones",
+          "tableTo": "personas",
+          "columnsFrom": [
+            "persona_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "inscripciones_evento_id_eventos_id_fk": {
+          "name": "inscripciones_evento_id_eventos_id_fk",
+          "tableFrom": "inscripciones",
+          "tableTo": "eventos",
+          "columnsFrom": [
+            "evento_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "inscripciones_grupo_asistencia_id_grupos_asistencia_id_fk": {
+          "name": "inscripciones_grupo_asistencia_id_grupos_asistencia_id_fk",
+          "tableFrom": "inscripciones",
+          "tableTo": "grupos_asistencia",
+          "columnsFrom": [
+            "grupo_asistencia_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
-    "people": {
-      "name": "people",
+    "personas": {
+      "name": "personas",
       "columns": {
         "id": {
           "name": "id",
@@ -122,29 +261,29 @@
           "notNull": true,
           "autoincrement": false
         },
-        "first_name": {
-          "name": "first_name",
+        "nombres": {
+          "name": "nombres",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "last_name": {
-          "name": "last_name",
+        "apellidos": {
+          "name": "apellidos",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "age": {
-          "name": "age",
-          "type": "integer",
+        "fecha_nacimiento": {
+          "name": "fecha_nacimiento",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "phone_number": {
-          "name": "phone_number",
+        "telefono": {
+          "name": "telefono",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
@@ -157,37 +296,30 @@
           "notNull": false,
           "autoincrement": false
         },
-        "identification_type": {
-          "name": "identification_type",
+        "tipo_identificacion": {
+          "name": "tipo_identificacion",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "identification_number": {
-          "name": "identification_number",
+        "numero_identificacion": {
+          "name": "numero_identificacion",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "date_of_birth": {
-          "name": "date_of_birth",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "created_at": {
-          "name": "created_at",
+        "fecha_creacion": {
+          "name": "fecha_creacion",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
           "default": "CURRENT_TIMESTAMP"
         },
-        "updated_at": {
-          "name": "updated_at",
+        "fecha_actualizacion": {
+          "name": "fecha_actualizacion",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
@@ -196,153 +328,29 @@
         }
       },
       "indexes": {
-        "people_phone_number_unique": {
-          "name": "people_phone_number_unique",
+        "personas_telefono_unique": {
+          "name": "personas_telefono_unique",
           "columns": [
-            "phone_number"
+            "telefono"
           ],
           "isUnique": true
         },
-        "people_email_unique": {
-          "name": "people_email_unique",
+        "personas_email_unique": {
+          "name": "personas_email_unique",
           "columns": [
             "email"
           ],
           "isUnique": true
         },
-        "people_identification_number_unique": {
-          "name": "people_identification_number_unique",
+        "personas_numero_identificacion_unique": {
+          "name": "personas_numero_identificacion_unique",
           "columns": [
-            "identification_number"
+            "numero_identificacion"
           ],
           "isUnique": true
         }
       },
       "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "checkConstraints": {}
-    },
-    "registrations": {
-      "name": "registrations",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "integer",
-          "primaryKey": true,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "person_id": {
-          "name": "person_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "event_id": {
-          "name": "event_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "requires_accommodation": {
-          "name": "requires_accommodation",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": 0
-        },
-        "attendance_group_id": {
-          "name": "attendance_group_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "relationship_to_leader": {
-          "name": "relationship_to_leader",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "status": {
-          "name": "status",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "'pending'"
-        },
-        "especial_needs": {
-          "name": "especial_needs",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "CURRENT_TIMESTAMP"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "CURRENT_TIMESTAMP"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "registrations_person_id_people_id_fk": {
-          "name": "registrations_person_id_people_id_fk",
-          "tableFrom": "registrations",
-          "tableTo": "people",
-          "columnsFrom": [
-            "person_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "registrations_event_id_events_id_fk": {
-          "name": "registrations_event_id_events_id_fk",
-          "tableFrom": "registrations",
-          "tableTo": "events",
-          "columnsFrom": [
-            "event_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "registrations_attendance_group_id_attendance_groups_id_fk": {
-          "name": "registrations_attendance_group_id_attendance_groups_id_fk",
-          "tableFrom": "registrations",
-          "tableTo": "attendance_groups",
-          "columnsFrom": [
-            "attendance_group_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "checkConstraints": {}
