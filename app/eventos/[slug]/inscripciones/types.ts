@@ -32,6 +32,7 @@ export interface DatosEvento {
   fecha_inicio?: string;
   fecha_fin?: string;
   descripcion?: string;
+  ubicacion?: string;
   slug: string;
   datos_documento?: {
     tipo_documento: string;

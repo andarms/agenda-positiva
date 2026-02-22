@@ -15,17 +15,25 @@ export default function GrupoAsistencia({
   handle_input_change
 }: SeccionFamiliaresProps) {
 
-  // Buscar persona por cédula - función placeholder
+  // Buscar persona por cédula
   async function buscar_persona_por_cedula(cedula: string): Promise<any | null> {
-    // Simular delay de API
-    await new Promise(resolve => setTimeout(resolve, 800));
-    // TODO: Implementar llamada real a la API
-    // return await fetch(`/api/personas/buscar`, {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({ cedula })
-    // }).then(res => res.json());
-    return null; // Por ahora no encuentra a nadie
+    try {
+      const response = await fetch('/api/personas/buscar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cedula })
+      });
+      
+      if (!response.ok) {
+        throw new Error('Error en la búsqueda');
+      }
+      
+      const data = await response.json();
+      return data.encontrada ? data.persona : null;
+    } catch (error) {
+      console.error('Error al buscar persona:', error);
+      return null;
+    }
   }
 
   // Crear nuevo miembro familiar

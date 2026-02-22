@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useParams } from 'next/navigation';
 
 interface VerificarDocumentoProps {
   onDocumentoVerificado: (tipo_documento: string, numero_documento: string) => void;
@@ -27,6 +28,9 @@ export default function VerificarDocumento({
 }: VerificarDocumentoProps) {
   const [tipo_documento, setTipoDocumento] = useState("");
   const [numero_documento, setNumeroDocumento] = useState("");
+  const [verificando, setVerificando] = useState(false);
+  const params = useParams();
+  const slug_evento = params.slug as string;
 
   const manejar_verificacion = async () => {
     if (!tipo_documento || numero_documento.length < 6) {
@@ -34,33 +38,36 @@ export default function VerificarDocumento({
       return;
     }
 
+    setVerificando(true);
     try {
-      // TODO: Reemplazar con llamada real a la API
-      const registro_existente = await verificar_documento_en_base_datos(tipo_documento, numero_documento);
+      const respuesta = await verificar_documento_en_base_datos(tipo_documento, numero_documento);
       
-      if (registro_existente) {
-        onRegistroExistente(registro_existente);
+      if (respuesta.esta_registrada) {
+        onRegistroExistente(respuesta);
       } else {
         onDocumentoVerificado(tipo_documento, numero_documento);
       }
     } catch (error) {
+      console.error('Error al verificar documento:', error);
       alert("Error al verificar el documento. Intente nuevamente.");
+    } finally {
+      setVerificando(false);
     }
   };
 
-  // Función placeholder para verificación de documento
-  const verificar_documento_en_base_datos = async (tipo: string, numero: string): Promise<any | null> => {
-    // Simular delay de API
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // TODO: Implementar llamada real a la API
-    // return await fetch(`/api/inscripciones/verificar`, {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({ tipo_documento: tipo, numero_documento: numero })
-    // }).then(res => res.json());
-    
-    return null; // Por ahora no hay registros existentes
+  // Función para verificar el documento en la API
+  const verificar_documento_en_base_datos = async (tipo: string, numero: string) => {
+    const response = await fetch(`/api/eventos/${slug_evento}/verificar-documento`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tipo_documento: tipo, numero_documento: numero })
+    });
+
+    if (!response.ok) {
+      throw new Error('Error en la verificación del documento');
+    }
+
+    return await response.json();
   };
 
   return (
@@ -104,7 +111,7 @@ export default function VerificarDocumento({
                   value={tipo_documento}
                   onChange={(e) => setTipoDocumento(e.target.value)}
                   className="w-full px-3 py-2 border-2 border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  disabled={esta_verificando}
+                  disabled={verificando}
                 >
                   {tipos_documento.map(tipo => (
                     <option key={tipo.value} value={tipo.value}>
@@ -125,16 +132,16 @@ export default function VerificarDocumento({
                   onChange={(e) => setNumeroDocumento(e.target.value)}
                   placeholder="Ingrese su número de documento"
                   className="w-full px-3 py-2 border-2 border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  disabled={esta_verificando}
+                  disabled={verificando}
                 />
               </div>
               
               <button
                 onClick={manejar_verificacion}
-                disabled={esta_verificando || !tipo_documento || numero_documento.length < 6}
+                disabled={verificando || !tipo_documento || numero_documento.length < 6}
                 className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium py-3 px-6 rounded-lg transition-colors focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed"
               >
-                {esta_verificando ? "Verificando..." : "Verificar"}
+                {verificando ? "Verificando..." : "Verificar"}
               </button>
             </div>
           </div>

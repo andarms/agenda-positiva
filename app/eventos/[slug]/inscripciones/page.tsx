@@ -25,22 +25,25 @@ export default function PreInscripcionPage() {
 
   const cargar_datos_evento = async () => {
     try {
-      // TODO: Implementar llamada real a la API
-      // const respuesta = await fetch(`/api/eventos/${slug_evento}`);
-      // const evento = await respuesta.json();
-      
-      // Por ahora, datos de ejemplo
-      setDatosEvento({
-        titulo: `Conferencia ${slug_evento.charAt(0).toUpperCase() + slug_evento.slice(1)}`,
-        fecha_inicio: "2026-03-15",
-        fecha_fin: "2026-03-17",
-        slug: slug_evento
-      });
+      const respuesta = await fetch(`/api/eventos/${slug_evento}`);
+      if (respuesta.ok) {
+        const data = await respuesta.json();
+        setDatosEvento({
+          titulo: data.evento.nombre,
+          fecha_inicio: data.evento.fecha_inicio,
+          fecha_fin: data.evento.fecha_fin,
+          slug: data.evento.slug,
+          descripcion: data.evento.descripcion,
+          ubicacion: data.evento.ubicacion,
+        });
+      } else {
+        throw new Error('Evento no encontrado');
+      }
     } catch (error) {
       console.error("Error al cargar datos del evento:", error);
       // Fallback data
       setDatosEvento({
-        titulo: "Conferencia",
+        titulo: `Conferencia ${slug_evento.charAt(0).toUpperCase() + slug_evento.slice(1)}`,
         slug: slug_evento
       });
     }
@@ -55,7 +58,28 @@ export default function PreInscripcionPage() {
     }));
   };
 
-  const manejar_registro_existente = (registro: RegistroPreInscripcion) => {
+  const manejar_registro_existente = (respuesta_api: any) => {
+    // Convertir la respuesta de la API al formato esperado por el componente
+    const registro: RegistroPreInscripcion = {
+      cedula: respuesta_api.datos_persona.numero_documento,
+      nombres: respuesta_api.datos_persona.nombres,
+      apellidos: respuesta_api.datos_persona.apellidos,
+      tipo_documento: respuesta_api.datos_persona.tipo_documento,
+      sexo: '',
+      fecha_nacimiento: '',
+      celular: respuesta_api.datos_persona.telefono || '',
+      email: respuesta_api.datos_persona.email || '',
+      departamento: '',
+      municipio: '',
+      participa_primer_evento: false,
+      requiere_hospedaje: respuesta_api.inscripcion?.requiere_hospedaje || false,
+      esta_sirviendo: false,
+      servicios: [],
+      familiares: [],
+      comentarios_hospedaje: '',
+      fecha_registro: respuesta_api.inscripcion?.fecha_creacion || new Date().toISOString().split('T')[0]
+    };
+    
     setRegistroExistente(registro);
     setPasoActual("ya-registrado");
   };
@@ -69,62 +93,18 @@ export default function PreInscripcionPage() {
     setEstaEnviando(true);
     
     try {
-      // Preparar datos de envío
-      const nueva_inscripcion: RegistroPreInscripcion = {
-        cedula: datos.numero_documento,
-        nombres: datos.nombres,
-        apellidos: datos.apellidos,
-        tipo_documento: datos.tipo_documento,
-        sexo: datos.sexo,
-        fecha_nacimiento: datos.fecha_nacimiento,
-        celular: datos.celular,
-        email: datos.email,
-        departamento: datos.departamento,
-        municipio: datos.municipio,
-        participa_primer_evento: datos.participa_primer_evento,
-        requiere_hospedaje: datos.requiere_hospedaje,
-        esta_sirviendo: datos.esta_sirviendo,
-        servicios: datos.servicios,
-        familiares: [
-          ...(datos.esposa ? [{
-            nombres: datos.esposa.nombres,
-            apellidos: datos.esposa.apellidos,
-            cedula: datos.esposa.cedula,
-            celular: datos.esposa.celular,
-            parentesco: datos.esposa.parentesco,
-            servicios: datos.esposa.servicios
-          }] : []),
-          ...datos.hijos.map(hijo => ({
-            nombres: hijo.nombres,
-            apellidos: hijo.apellidos,
-            cedula: hijo.cedula,
-            celular: hijo.celular,
-            parentesco: hijo.parentesco,
-            servicios: hijo.servicios
-          })),
-          ...datos.otros_familiares.map(familiar => ({
-            nombres: familiar.nombres,
-            apellidos: familiar.apellidos,
-            cedula: familiar.cedula,
-            celular: familiar.celular,
-            parentesco: familiar.parentesco,
-            servicios: familiar.servicios
-          }))
-        ],
-        comentarios_hospedaje: datos.comentarios_hospedaje.trim(),
-        fecha_registro: new Date().toISOString().split('T')[0]
-      };
+      const response = await fetch(`/api/eventos/${slug_evento}/inscripciones`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(datos)
+      });
 
-      // TODO: Implementar llamada real a la API
-      console.log("Guardando inscripción:", nueva_inscripcion);
-      // await fetch(`/api/eventos/${slug_evento}/inscripciones`, {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(nueva_inscripcion)
-      // });
-      
-      // Simular delay de API
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      if (!response.ok) {
+        const error_data = await response.json();
+        throw new Error(error_data.error || 'Error al procesar la inscripción');
+      }
+
+      const result = await response.json();
       
       alert("¡Pre-inscripción enviada correctamente! Gracias por registrarte.");
       
@@ -133,7 +113,8 @@ export default function PreInscripcionPage() {
       
     } catch (error) {
       console.error("Error al enviar formulario:", error);
-      alert("Error al enviar la pre-inscripción. Por favor intente nuevamente.");
+      const error_message = error instanceof Error ? error.message : 'Por favor intente nuevamente.';
+      alert(`Error al enviar la pre-inscripción: ${error_message}`);
     } finally {
       setEstaEnviando(false);
     }
