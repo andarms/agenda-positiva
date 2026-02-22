@@ -1,0 +1,256 @@
+'use client';
+
+import { useState } from 'react';
+import GrupoAsistencia from './GrupoAsistencia';
+import InformacionPersonal, { DatosPersonales, extraerDatosPersonales } from './InformacionPersonal';
+
+
+export interface DatosFormulario {
+  nombres: string;
+  apellidos: string;
+  tipo_documento: string;
+  numero_documento: string;
+  sexo: string;
+  fecha_nacimiento: string;
+  celular: string;
+  email: string;
+  departamento: string;
+  municipio: string;
+  participa_primer_evento: boolean;
+  requiere_hospedaje: boolean;
+  esta_sirviendo: boolean;
+  servicios: string[];
+  viaja_con_esposa: boolean;
+  viaja_con_hijos: boolean;
+  viaja_con_otro_familiar: boolean;
+  esposa?: MiembroFamiliar;
+  hijos: MiembroFamiliar[];
+  otros_familiares: MiembroFamiliar[];
+  comentarios_hospedaje: string;
+}
+
+export interface MiembroFamiliar {
+  id: string;
+  cedula: string;
+  nombres: string;
+  apellidos: string;  
+  tipo_documento: string;
+  sexo: string;
+  fecha_nacimiento: string;
+  celular: string;
+  departamento: string;
+  municipio: string;
+  participa_primer_evento: boolean;
+  esta_sirviendo: boolean;
+  servicios: string[];
+  parentesco: string;
+  person_id: number | null;
+  esta_buscando: boolean;
+  fue_encontrado: boolean;
+}
+
+interface FormularioInscripcionProps {
+  datos_iniciales: Partial<DatosFormulario>;
+  on_volver: () => void;
+  on_enviar: (datos: DatosFormulario) => Promise<void>;
+  esta_enviando: boolean;
+  evento_titulo?: string;
+}
+
+const servicios_disponibles = [
+  { value: "ninos", label: "Niños" },
+  { value: "musica", label: "Música" },
+  { value: "jovenes", label: "Jóvenes" },
+  { value: "seguridad", label: "Seguridad" },
+  { value: "enfermeria", label: "Enfermería" },
+  { value: "logistica", label: "Logística" },
+  { value: "protocolo", label: "Protocolo" },
+  { value: "audiovisuales", label: "Audiovisuales" },
+  { value: "limpieza", label: "Limpieza" },
+  { value: "cocina", label: "Cocina" },
+];
+
+export default function FormularioInscripcion({
+  datos_iniciales,
+  on_volver,
+  on_enviar,
+  esta_enviando,
+  evento_titulo = "Conferencias"
+}: FormularioInscripcionProps) {
+  const [datos_formulario, set_datos_formulario] = useState<DatosFormulario>({
+    nombres: "",
+    apellidos: "",
+    tipo_documento: datos_iniciales.tipo_documento || "",
+    numero_documento: datos_iniciales.numero_documento || "",
+    sexo: "",
+    fecha_nacimiento: "",
+    celular: "",
+    email: "",
+    departamento: "cundinamarca",
+    municipio: "bogota",
+    participa_primer_evento: false,
+    requiere_hospedaje: false,
+    esta_sirviendo: false,
+    servicios: [],
+    viaja_con_esposa: false,
+    viaja_con_hijos: false,
+    viaja_con_otro_familiar: false,
+    hijos: [],
+    otros_familiares: [],
+    comentarios_hospedaje: "",
+    ...datos_iniciales
+  });
+
+  const handle_input_change = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value, type } = e.target;
+    
+    if (type === "checkbox") {
+      const checked = (e.target as HTMLInputElement).checked;
+      set_datos_formulario(prev => ({
+        ...prev,
+        [name]: checked,
+        // Limpiar familiares y comentarios si hospedaje se desmarca
+        ...(name === "requiere_hospedaje" && !checked ? { 
+          viaja_con_esposa: false, 
+          viaja_con_hijos: false, 
+          viaja_con_otro_familiar: false,
+          esposa: undefined,
+          hijos: [], 
+          otros_familiares: [],
+          comentarios_hospedaje: "" 
+        } : {}),
+        // Limpiar familiares específicos cuando se desmarca
+        ...(name === "viaja_con_esposa" && !checked ? { esposa: undefined } : {}),
+        ...(name === "viaja_con_hijos" && !checked ? { hijos: [] } : {}),
+        ...(name === "viaja_con_otro_familiar" && !checked ? { otros_familiares: [] } : {})
+      }));
+    } else {
+      set_datos_formulario(prev => ({ ...prev, [name]: value }));
+    }
+  };
+
+  const manejar_cambio_servicios = (servicio: string) => {
+    set_datos_formulario(prev => ({
+      ...prev,
+      servicios: prev.servicios.includes(servicio)
+        ? prev.servicios.filter(s => s !== servicio)
+        : [...prev.servicios, servicio]
+    }));
+  };
+
+  const manejar_envio = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await on_enviar(datos_formulario);
+  };
+
+  return (
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-900">
+      <div className="container mx-auto px-4 py-12">
+        {/* Header */}
+        <div className="mb-8">
+          <button
+            onClick={on_volver}
+            className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 mb-4"
+          >
+            ← Verificar otro documento
+          </button>
+          <h1 className="text-4xl font-bold text-zinc-900 dark:text-zinc-100 mb-4">
+            Pre-inscripción
+          </h1>
+          <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800 mb-4">
+            <p className="text-lg font-semibold text-blue-800 dark:text-blue-200">
+              Evento: {evento_titulo}
+            </p>
+          </div>
+          <p className="text-lg text-zinc-600 dark:text-zinc-400">
+            Completa este formulario para registrarte previamente al evento
+          </p>
+          <p className="text-sm text-zinc-500 dark:text-zinc-500 mt-2">
+            Documento: {datos_formulario.numero_documento}
+          </p>
+        </div>
+
+        {/* Form */}
+        <div className="bg-white dark:bg-zinc-800 rounded-lg border-2 border-zinc-200 dark:border-zinc-700 p-8">
+          <form onSubmit={manejar_envio} className="space-y-8">
+            {/* Información Personal */}
+            <InformacionPersonal
+              datos={extraerDatosPersonales(datos_formulario)}
+              onChange={(campo, valor) => {
+                set_datos_formulario(prev => ({ ...prev, [campo]: valor }));
+              }}
+              mostrarEmail={true}
+              titulo="Información Personal"
+              subtitulo="Complete sus datos personales"
+            />
+
+            {/* Información de Hospedaje */}
+            <div>
+              <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-6">
+                Información de Hospedaje
+              </h3>
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  id="requiere_hospedaje"
+                  name="requiere_hospedaje"
+                  checked={datos_formulario.requiere_hospedaje}
+                  onChange={handle_input_change}
+                  className="h-4 w-4 text-blue-600 bg-zinc-100 border-zinc-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-zinc-800 focus:ring-2 dark:bg-zinc-700 dark:border-zinc-600"
+                />
+                <label htmlFor="requiere_hospedaje" className="ml-2 text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                  Requiere hospedaje
+                </label>
+              </div>
+            </div>
+
+            {/* Sección de Familiares - Solo si requiere hospedaje */}
+            {datos_formulario.requiere_hospedaje && (
+              <GrupoAsistencia
+                datos_formulario={datos_formulario}
+                set_datos_formulario={set_datos_formulario}
+                handle_input_change={handle_input_change}
+              />
+            )}
+
+            {/* Servicios */}
+            <div>
+              <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-6">
+                ¿Actualmente en la iglesia está participando de alguno de estos servicios?
+              </h3>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                {servicios_disponibles.map(servicio => (
+                  <div key={servicio.value} className="flex items-center">
+                    <input
+                      type="checkbox"
+                      id={`servicio-${servicio.value}`}
+                      checked={datos_formulario.servicios.includes(servicio.value)}
+                      onChange={() => manejar_cambio_servicios(servicio.value)}
+                      className="h-4 w-4 text-blue-600 bg-zinc-100 border-zinc-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-zinc-800 focus:ring-2 dark:bg-zinc-700 dark:border-zinc-600"
+                    />
+                    <label htmlFor={`servicio-${servicio.value}`} className="ml-2 text-sm text-zinc-700 dark:text-zinc-300">
+                      {servicio.label}
+                    </label>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+
+
+            {/* Botón de Envío */}
+            <div className="p-6 bg-zinc-50 dark:bg-zinc-700/50 rounded-lg">
+              <button
+                type="submit"
+                disabled={esta_enviando}
+                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium py-3 px-6 rounded-lg transition-colors focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed"
+              >
+                {esta_enviando ? "Enviando..." : "Enviar Pre-inscripción"}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+}
