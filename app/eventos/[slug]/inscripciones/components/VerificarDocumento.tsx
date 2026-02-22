@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useParams } from 'next/navigation';
 
 interface VerificarDocumentoProps {
-  onDocumentoVerificado: (tipo_documento: string, numero_documento: string) => void;
+  onDocumentoVerificado: (tipo_documento: string, numero_documento: string, datos_persona?: any) => void;
   onRegistroExistente: (registro: any) => void;
   evento_titulo?: string;
   evento_fecha?: string;
@@ -45,7 +45,8 @@ export default function VerificarDocumento({
       if (respuesta.esta_registrada) {
         onRegistroExistente(respuesta);
       } else {
-        onDocumentoVerificado(tipo_documento, numero_documento);
+        // Pasar los datos de persona si existen (persona registrada pero no inscrita al evento)
+        onDocumentoVerificado(tipo_documento, numero_documento, respuesta.datos_persona);
       }
     } catch (error) {
       console.error('Error al verificar documento:', error);

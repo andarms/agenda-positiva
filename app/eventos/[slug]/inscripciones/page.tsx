@@ -14,6 +14,7 @@ export default function PreInscripcionPage() {
   // Estados principales
   const [paso_actual, setPasoActual] = useState<"verificar" | "formulario" | "ya-registrado">("verificar");
   const [registro_existente, setRegistroExistente] = useState<RegistroPreInscripcion | null>(null);
+  const [datos_persona_existente, setDatosPersonaExistente] = useState<any | null>(null);
   const [esta_verificando, setEstaVerificando] = useState(false);
   const [esta_enviando, setEstaEnviando] = useState(false);
   const [datos_evento, setDatosEvento] = useState<DatosEvento | null>(null);
@@ -49,13 +50,15 @@ export default function PreInscripcionPage() {
     }
   };
 
-  const manejar_documento_verificado = (tipo_documento: string, numero_documento: string) => {
+  const manejar_documento_verificado = (tipo_documento: string, numero_documento: string, datos_persona?: any) => {
     setPasoActual("formulario");
-    // Almacenar los datos del documento verificado
+    // Almacenar los datos del documento verificado y datos de persona si existen
     setDatosEvento(prev => ({
       ...prev!,
       datos_documento: { tipo_documento, numero_documento }
     }));
+    // Si hay datos de persona existente, almacenarlos para prellenar el formulario
+    setDatosPersonaExistente(datos_persona || null);
   };
 
   const manejar_registro_existente = (respuesta_api: any) => {
@@ -87,6 +90,7 @@ export default function PreInscripcionPage() {
   const iniciar_nuevo_registro = () => {
     setPasoActual("verificar");
     setRegistroExistente(null);
+    setDatosPersonaExistente(null);
   };
 
   const manejar_envio_formulario = async (datos: DatosFormulario) => {
@@ -124,7 +128,9 @@ export default function PreInscripcionPage() {
   if (paso_actual === "verificar") {
     return (
       <VerificarDocumento
-        onDocumentoVerificado={manejar_documento_verificado}
+        onDocumentoVerificado={(tipo_documento, numero_documento, datos_persona) => 
+          manejar_documento_verificado(tipo_documento, numero_documento, datos_persona)
+        }
         onRegistroExistente={manejar_registro_existente}
         evento_titulo={datos_evento?.titulo}
         evento_fecha={datos_evento?.fecha_inicio}
@@ -144,16 +150,31 @@ export default function PreInscripcionPage() {
   }
 
   if (paso_actual === "formulario") {
+    // Construir datos iniciales combinando documento verificado y datos de persona existente
+    const datos_iniciales_completos = {
+      tipo_documento: datos_evento?.datos_documento?.tipo_documento || "",
+      numero_documento: datos_evento?.datos_documento?.numero_documento || "",
+      // Si hay datos de persona existente, usarlos para prellenar
+      ...(datos_persona_existente && {
+        nombres: datos_persona_existente.nombres || "",
+        apellidos: datos_persona_existente.apellidos || "",
+        fecha_nacimiento: datos_persona_existente.fecha_nacimiento || "",
+        celular: datos_persona_existente.telefono || "",
+        email: datos_persona_existente.email || "",
+        // Mapear el tipo de documento del backend al formato del frontend
+        tipo_documento: datos_persona_existente.tipo_documento || datos_evento?.datos_documento?.tipo_documento || "",
+        numero_documento: datos_persona_existente.numero_documento || datos_evento?.datos_documento?.numero_documento || "",
+      })
+    };
+
     return (
       <FormularioInscripcion
-        datos_iniciales={{
-          tipo_documento: datos_evento?.datos_documento?.tipo_documento || "",
-          numero_documento: datos_evento?.datos_documento?.numero_documento || ""
-        }}
+        datos_iniciales={datos_iniciales_completos}
         on_volver={iniciar_nuevo_registro}
         on_enviar={manejar_envio_formulario}
         esta_enviando={esta_enviando}
         evento_titulo={datos_evento?.titulo}
+        datos_prellenados={!!datos_persona_existente}
       />
     );
   }

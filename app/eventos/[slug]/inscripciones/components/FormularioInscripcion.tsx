@@ -55,6 +55,7 @@ interface FormularioInscripcionProps {
   on_enviar: (datos: DatosFormulario) => Promise<void>;
   esta_enviando: boolean;
   evento_titulo?: string;
+  datos_prellenados?: boolean;
 }
 
 const servicios_disponibles = [
@@ -75,7 +76,8 @@ export default function FormularioInscripcion({
   on_volver,
   on_enviar,
   esta_enviando,
-  evento_titulo = "Conferencias"
+  evento_titulo = "Conferencias",
+  datos_prellenados = false
 }: FormularioInscripcionProps) {
   const [datos_formulario, set_datos_formulario] = useState<DatosFormulario>({
     nombres: "",
@@ -168,6 +170,24 @@ export default function FormularioInscripcion({
           <p className="text-sm text-zinc-500 dark:text-zinc-500 mt-2">
             Documento: {datos_formulario.numero_documento}
           </p>
+          
+          {/* Notificación de datos prellenados */}
+          {datos_prellenados && (
+            <div className="mt-4 bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
+              <div className="flex items-center gap-2">
+                <div className="text-green-600 dark:text-green-400 text-lg">✓</div>
+                <div>
+                  <p className="text-sm font-medium text-green-800 dark:text-green-200">
+                    Datos encontrados en el sistema
+                  </p>
+                  <p className="text-sm text-green-600 dark:text-green-400">
+                    Hemos prellenado tu información con datos de registros anteriores. 
+                    Revisa y actualiza los datos si es necesario.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Form */}

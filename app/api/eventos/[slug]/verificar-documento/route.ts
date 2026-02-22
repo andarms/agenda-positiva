@@ -75,9 +75,11 @@ export async function POST(
         datos_persona: {
           nombres: persona[0].nombres,
           apellidos: persona[0].apellidos,
+          fecha_nacimiento: persona[0].fecha_nacimiento,
           telefono: persona[0].telefono,
           email: persona[0].email,
           tipo_documento: persona[0].tipo_identificacion,
+          numero_documento: persona[0].numero_identificacion,
         }
       });
     }
@@ -97,6 +99,7 @@ export async function POST(
       datos_persona: {
         nombres: persona[0].nombres,
         apellidos: persona[0].apellidos,
+        fecha_nacimiento: persona[0].fecha_nacimiento,
         telefono: persona[0].telefono,
         email: persona[0].email,
         tipo_documento: persona[0].tipo_identificacion,
