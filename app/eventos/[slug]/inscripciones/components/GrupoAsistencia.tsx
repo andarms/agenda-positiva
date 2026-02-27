@@ -1,43 +1,50 @@
-'use client';
+"use client";
 
-import { DatosFormulario, MiembroFamiliar } from './FormularioInscripcion';
-import FormularioFamiliar from './FormularioFamiliar';
+import { DatosFormulario, MiembroFamiliar } from "./FormularioInscripcion";
+import FormularioFamiliar from "./FormularioFamiliar";
 
 interface SeccionFamiliaresProps {
   datos_formulario: DatosFormulario;
   set_datos_formulario: React.Dispatch<React.SetStateAction<DatosFormulario>>;
-  handle_input_change: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
+  handle_input_change: (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >,
+  ) => void;
 }
 
 export default function GrupoAsistencia({
   datos_formulario,
   set_datos_formulario,
-  handle_input_change
+  handle_input_change,
 }: SeccionFamiliaresProps) {
-
   // Buscar persona por cédula
-  async function buscar_persona_por_cedula(cedula: string): Promise<any | null> {
+  async function buscar_persona_por_cedula(
+    cedula: string,
+  ): Promise<any | null> {
     try {
-      const response = await fetch('/api/personas/buscar', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ cedula })
+      const response = await fetch("/api/personas/buscar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cedula }),
       });
-      
+
       if (!response.ok) {
-        throw new Error('Error en la búsqueda');
+        throw new Error("Error en la búsqueda");
       }
-      
+
       const data = await response.json();
       return data.encontrada ? data.persona : null;
     } catch (error) {
-      console.error('Error al buscar persona:', error);
+      console.error("Error al buscar persona:", error);
       return null;
     }
   }
 
   // Crear nuevo miembro familiar
-  const crear_nuevo_miembro_familiar = (parentesco: string): MiembroFamiliar => ({
+  const crear_nuevo_miembro_familiar = (
+    parentesco: string,
+  ): MiembroFamiliar => ({
     id: Date.now().toString(),
     cedula: "",
     nombres: "",
@@ -58,88 +65,93 @@ export default function GrupoAsistencia({
   });
 
   const agregar_esposa = () => {
-    set_datos_formulario(prev => ({
+    set_datos_formulario((prev) => ({
       ...prev,
-      esposa: crear_nuevo_miembro_familiar("esposa")
+      esposa: crear_nuevo_miembro_familiar("esposa"),
     }));
   };
 
   const agregar_hijo = () => {
     const nuevo_hijo = crear_nuevo_miembro_familiar("hijo");
-    set_datos_formulario(prev => ({
+    set_datos_formulario((prev) => ({
       ...prev,
-      hijos: [...prev.hijos, nuevo_hijo]
+      hijos: [...prev.hijos, nuevo_hijo],
     }));
   };
 
   const agregar_otro_familiar = () => {
     const nuevo_familiar = crear_nuevo_miembro_familiar("");
-    set_datos_formulario(prev => ({
+    set_datos_formulario((prev) => ({
       ...prev,
-      otros_familiares: [...prev.otros_familiares, nuevo_familiar]
+      otros_familiares: [...prev.otros_familiares, nuevo_familiar],
     }));
   };
 
   const remover_hijo = (id: string) => {
-    set_datos_formulario(prev => ({
+    set_datos_formulario((prev) => ({
       ...prev,
-      hijos: prev.hijos.filter(hijo => hijo.id !== id)
+      hijos: prev.hijos.filter((hijo) => hijo.id !== id),
     }));
   };
 
   const remover_otro_familiar = (id: string) => {
-    set_datos_formulario(prev => ({
+    set_datos_formulario((prev) => ({
       ...prev,
-      otros_familiares: prev.otros_familiares.filter(familiar => familiar.id !== id)
+      otros_familiares: prev.otros_familiares.filter(
+        (familiar) => familiar.id !== id,
+      ),
     }));
   };
 
   const actualizar_esposa = (updates: Partial<MiembroFamiliar>) => {
     if (datos_formulario.esposa) {
-      set_datos_formulario(prev => ({
+      set_datos_formulario((prev) => ({
         ...prev,
-        esposa: { ...prev.esposa!, ...updates }
+        esposa: { ...prev.esposa!, ...updates },
       }));
     }
   };
 
   const actualizar_hijo = (id: string, updates: Partial<MiembroFamiliar>) => {
-    set_datos_formulario(prev => ({
+    set_datos_formulario((prev) => ({
       ...prev,
-      hijos: prev.hijos.map(hijo =>
-        hijo.id === id ? { ...hijo, ...updates } : hijo
-      )
+      hijos: prev.hijos.map((hijo) =>
+        hijo.id === id ? { ...hijo, ...updates } : hijo,
+      ),
     }));
   };
 
-  const actualizar_otro_familiar = (id: string, updates: Partial<MiembroFamiliar>) => {
-    set_datos_formulario(prev => ({
+  const actualizar_otro_familiar = (
+    id: string,
+    updates: Partial<MiembroFamiliar>,
+  ) => {
+    set_datos_formulario((prev) => ({
       ...prev,
-      otros_familiares: prev.otros_familiares.map(familiar =>
-        familiar.id === id ? { ...familiar, ...updates } : familiar
-      )
+      otros_familiares: prev.otros_familiares.map((familiar) =>
+        familiar.id === id ? { ...familiar, ...updates } : familiar,
+      ),
     }));
   };
 
   const manejar_busqueda_cedula_familiar = async (
     miembro: MiembroFamiliar,
     cedula: string,
-    funcion_actualizar: (updates: Partial<MiembroFamiliar>) => void
+    funcion_actualizar: (updates: Partial<MiembroFamiliar>) => void,
   ) => {
     // Actualizar cédula inmediatamente
-    funcion_actualizar({ 
-      cedula, 
+    funcion_actualizar({
+      cedula,
       esta_buscando: cedula.length >= 6,
       fue_encontrado: false,
       nombres: "",
-      person_id: null
+      person_id: null,
     });
 
     // Solo buscar si la cédula tiene longitud razonable
     if (cedula.length >= 6) {
       try {
         const persona = await buscar_persona_por_cedula(cedula);
-        
+
         if (persona) {
           funcion_actualizar({
             nombres: persona.nombres,
@@ -155,7 +167,7 @@ export default function GrupoAsistencia({
             servicios: persona.servicios,
             person_id: persona.id,
             esta_buscando: false,
-            fue_encontrado: true
+            fue_encontrado: true,
           });
         } else {
           funcion_actualizar({
@@ -172,13 +184,13 @@ export default function GrupoAsistencia({
             municipio: "bogota",
             participa_primer_evento: false,
             esta_sirviendo: false,
-            servicios: []
+            servicios: [],
           });
         }
       } catch (error) {
         funcion_actualizar({
           esta_buscando: false,
-          fue_encontrado: false
+          fue_encontrado: false,
         });
       }
     }
@@ -189,7 +201,7 @@ export default function GrupoAsistencia({
       <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-6">
         Información de Acompañantes
       </h3>
-      
+
       {/* Pregunta y Formulario de Esposa */}
       <div className="mb-8">
         <div className="flex items-center mb-4">
@@ -201,7 +213,10 @@ export default function GrupoAsistencia({
             onChange={handle_input_change}
             className="h-4 w-4 text-blue-600 bg-zinc-100 border-zinc-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-zinc-800 focus:ring-2 dark:bg-zinc-700 dark:border-zinc-600"
           />
-          <label htmlFor="viaja_con_esposa" className="ml-2 text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <label
+            htmlFor="viaja_con_esposa"
+            className="ml-2 text-sm font-medium text-zinc-700 dark:text-zinc-300"
+          >
             ¿Viaja con su esposa?
           </label>
         </div>
@@ -222,14 +237,21 @@ export default function GrupoAsistencia({
                 </button>
               )}
             </div>
-            
+
             {datos_formulario.esposa && (
               <div className="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-lg border-2 border-blue-200 dark:border-blue-800">
                 <div className="flex items-center justify-between mb-4">
-                  <h5 className="font-medium text-zinc-900 dark:text-zinc-100">Esposa</h5>
+                  <h5 className="font-medium text-zinc-900 dark:text-zinc-100">
+                    Esposa
+                  </h5>
                   <button
                     type="button"
-                    onClick={() => set_datos_formulario(prev => ({ ...prev, esposa: undefined }))}
+                    onClick={() =>
+                      set_datos_formulario((prev) => ({
+                        ...prev,
+                        esposa: undefined,
+                      }))
+                    }
                     className="text-red-600 hover:text-red-700 text-sm"
                   >
                     Eliminar
@@ -239,7 +261,13 @@ export default function GrupoAsistencia({
                 <FormularioFamiliar
                   miembro={datos_formulario.esposa}
                   onUpdate={actualizar_esposa}
-                  onBuscarCedula={(cedula) => manejar_busqueda_cedula_familiar(datos_formulario.esposa!, cedula, actualizar_esposa)}
+                  onBuscarCedula={(cedula) =>
+                    manejar_busqueda_cedula_familiar(
+                      datos_formulario.esposa!,
+                      cedula,
+                      actualizar_esposa,
+                    )
+                  }
                 />
               </div>
             )}
@@ -258,7 +286,10 @@ export default function GrupoAsistencia({
             onChange={handle_input_change}
             className="h-4 w-4 text-blue-600 bg-zinc-100 border-zinc-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-zinc-800 focus:ring-2 dark:bg-zinc-700 dark:border-zinc-600"
           />
-          <label htmlFor="viaja_con_hijos" className="ml-2 text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <label
+            htmlFor="viaja_con_hijos"
+            className="ml-2 text-sm font-medium text-zinc-700 dark:text-zinc-300"
+          >
             ¿Viaja con sus hijos?
           </label>
         </div>
@@ -277,7 +308,7 @@ export default function GrupoAsistencia({
                 + Agregar Hijo
               </button>
             </div>
-            
+
             {datos_formulario.hijos.length === 0 ? (
               <div className="text-center py-6 text-zinc-500 dark:text-zinc-400 bg-zinc-50 dark:bg-zinc-700/50 rounded-lg">
                 <p>Ningún hijo agregado</p>
@@ -285,9 +316,14 @@ export default function GrupoAsistencia({
             ) : (
               <div className="space-y-4">
                 {datos_formulario.hijos.map((hijo, index) => (
-                  <div key={hijo.id} className="bg-green-50 dark:bg-green-900/20 p-6 rounded-lg border-2 border-green-200 dark:border-green-800">
+                  <div
+                    key={hijo.id}
+                    className="bg-green-50 dark:bg-green-900/20 p-6 rounded-lg border-2 border-green-200 dark:border-green-800"
+                  >
                     <div className="flex items-center justify-between mb-4">
-                      <h5 className="font-medium text-zinc-900 dark:text-zinc-100">Hijo {index + 1}</h5>
+                      <h5 className="font-medium text-zinc-900 dark:text-zinc-100">
+                        Hijo {index + 1}
+                      </h5>
                       <button
                         type="button"
                         onClick={() => remover_hijo(hijo.id)}
@@ -296,11 +332,17 @@ export default function GrupoAsistencia({
                         Eliminar
                       </button>
                     </div>
-                    
+
                     <FormularioFamiliar
                       miembro={hijo}
                       onUpdate={(updates) => actualizar_hijo(hijo.id, updates)}
-                      onBuscarCedula={(cedula) => manejar_busqueda_cedula_familiar(hijo, cedula, (updates) => actualizar_hijo(hijo.id, updates))}
+                      onBuscarCedula={(cedula) =>
+                        manejar_busqueda_cedula_familiar(
+                          hijo,
+                          cedula,
+                          (updates) => actualizar_hijo(hijo.id, updates),
+                        )
+                      }
                     />
                   </div>
                 ))}
@@ -321,7 +363,10 @@ export default function GrupoAsistencia({
             onChange={handle_input_change}
             className="h-4 w-4 text-blue-600 bg-zinc-100 border-zinc-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-zinc-800 focus:ring-2 dark:bg-zinc-700 dark:border-zinc-600"
           />
-          <label htmlFor="viaja_con_otro_familiar" className="ml-2 text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <label
+            htmlFor="viaja_con_otro_familiar"
+            className="ml-2 text-sm font-medium text-zinc-700 dark:text-zinc-300"
+          >
             ¿Viaja con algún otro familiar?
           </label>
         </div>
@@ -340,7 +385,7 @@ export default function GrupoAsistencia({
                 + Agregar Familiar
               </button>
             </div>
-            
+
             {datos_formulario.otros_familiares.length === 0 ? (
               <div className="text-center py-6 text-zinc-500 dark:text-zinc-400 bg-zinc-50 dark:bg-zinc-700/50 rounded-lg">
                 <p>Ningún familiar agregado</p>
@@ -348,9 +393,14 @@ export default function GrupoAsistencia({
             ) : (
               <div className="space-y-4">
                 {datos_formulario.otros_familiares.map((familiar, index) => (
-                  <div key={familiar.id} className="bg-purple-50 dark:bg-purple-900/20 p-6 rounded-lg border-2 border-purple-200 dark:border-purple-800">
+                  <div
+                    key={familiar.id}
+                    className="bg-purple-50 dark:bg-purple-900/20 p-6 rounded-lg border-2 border-purple-200 dark:border-purple-800"
+                  >
                     <div className="flex items-center justify-between mb-4">
-                      <h5 className="font-medium text-zinc-900 dark:text-zinc-100">Familiar {index + 1}</h5>
+                      <h5 className="font-medium text-zinc-900 dark:text-zinc-100">
+                        Familiar {index + 1}
+                      </h5>
                       <button
                         type="button"
                         onClick={() => remover_otro_familiar(familiar.id)}
@@ -359,11 +409,20 @@ export default function GrupoAsistencia({
                         Eliminar
                       </button>
                     </div>
-                    
+
                     <FormularioFamiliar
                       miembro={familiar}
-                      onUpdate={(updates) => actualizar_otro_familiar(familiar.id, updates)}
-                      onBuscarCedula={(cedula) => manejar_busqueda_cedula_familiar(familiar, cedula, (updates) => actualizar_otro_familiar(familiar.id, updates))}
+                      onUpdate={(updates) =>
+                        actualizar_otro_familiar(familiar.id, updates)
+                      }
+                      onBuscarCedula={(cedula) =>
+                        manejar_busqueda_cedula_familiar(
+                          familiar,
+                          cedula,
+                          (updates) =>
+                            actualizar_otro_familiar(familiar.id, updates),
+                        )
+                      }
                       mostrarParentesco={true}
                     />
                   </div>
@@ -380,7 +439,13 @@ export default function GrupoAsistencia({
           Necesidades Especiales de Hospedaje
         </h4>
         <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-3">
-          Si usted o sus acompañantes utilizan silla de ruedas, tienen movilidad reducida, se encuentran en recuperación médica, presentan alguna condición cognitiva, requieren habitación en planta baja o algún apoyo adicional, por favor indíquelo aquí. Esta información nos ayudará a gestionar el hospedaje de la mejor manera posible y, cuando sea necesario, procurar que las personas que requieran apoyo puedan alojarse juntas. Las solicitudes se atenderán según disponibilidad.
+          Si usted o sus acompañantes utilizan silla de ruedas, tienen movilidad
+          reducida, se encuentran en recuperación médica, presentan alguna
+          condición cognitiva o requieren algún apoyo adicional, por favor
+          indíquelo aquí. Esta información nos ayudará a gestionar el hospedaje
+          de la mejor manera posible y, cuando sea necesario, procurar que las
+          personas que requieran apoyo puedan alojarse juntas. Las solicitudes
+          se atenderán según disponibilidad.
         </p>
         <textarea
           name="comentarios_hospedaje"

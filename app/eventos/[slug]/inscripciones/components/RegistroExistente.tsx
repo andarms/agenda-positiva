@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 interface RegistroExistente {
   cedula: string;
@@ -18,6 +18,17 @@ interface RegistroExistente {
   familiares?: FamiliarRegistrado[];
   comentarios_hospedaje?: string;
   fecha_registro: string;
+  grupo_asistencia_id?: number;
+  relacion_con_lider?: string;
+  otros_miembros_grupo?: MiembroGrupo[];
+}
+
+interface MiembroGrupo {
+  nombres: string;
+  apellidos: string;
+  cedula: string;
+  relacion_con_lider: string;
+  requiere_hospedaje: boolean;
 }
 
 interface FamiliarRegistrado {
@@ -71,7 +82,7 @@ const opciones_parentesco = [
 export default function RegistroExistente({
   registro,
   onIniciarNuevoRegistro,
-  evento_titulo = "Conferencias"
+  evento_titulo = "Conferencias",
 }: RegistroExistenteProps) {
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-900">
@@ -99,35 +110,83 @@ export default function RegistroExistente({
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                 <div>
-                  <span className="text-zinc-600 dark:text-zinc-400">Fecha de registro:</span>
-                  <p className="font-medium text-zinc-900 dark:text-zinc-100">{registro.fecha_registro}</p>
+                  <span className="text-zinc-600 dark:text-zinc-400">
+                    Fecha de registro:
+                  </span>
+                  <p className="font-medium text-zinc-900 dark:text-zinc-100">
+                    {registro.fecha_registro}
+                  </p>
                 </div>
                 <div>
-                  <span className="text-zinc-600 dark:text-zinc-400">Celular:</span>
-                  <p className="font-medium text-zinc-900 dark:text-zinc-100">{registro.celular}</p>
+                  <span className="text-zinc-600 dark:text-zinc-400">
+                    Celular:
+                  </span>
+                  <p className="font-medium text-zinc-900 dark:text-zinc-100">
+                    {registro.celular}
+                  </p>
                 </div>
+                {registro.email && (
+                  <div>
+                    <span className="text-zinc-600 dark:text-zinc-400">
+                      Email:
+                    </span>
+                    <p className="font-medium text-zinc-900 dark:text-zinc-100">
+                      {registro.email}
+                    </p>
+                  </div>
+                )}
                 <div>
-                  <span className="text-zinc-600 dark:text-zinc-400">Email:</span>
-                  <p className="font-medium text-zinc-900 dark:text-zinc-100">{registro.email}</p>
-                </div>
-                <div>
-                  <span className="text-zinc-600 dark:text-zinc-400">Requiere hospedaje:</span>
+                  <span className="text-zinc-600 dark:text-zinc-400">
+                    Requiere hospedaje:
+                  </span>
                   <p className="font-medium text-zinc-900 dark:text-zinc-100">
                     {registro.requiere_hospedaje ? "Sí" : "No"}
                   </p>
                 </div>
                 <div className="md:col-span-2">
-                  <span className="text-zinc-600 dark:text-zinc-400">Servicios:</span>
+                  <span className="text-zinc-600 dark:text-zinc-400">
+                    Servicios:
+                  </span>
                   <p className="font-medium text-zinc-900 dark:text-zinc-100">
-                    {registro.servicios.length > 0 
-                      ? registro.servicios.map(s => 
-                          servicios_disponibles.find(sd => sd.value === s)?.label
-                        ).join(", ")
-                      : "Ninguno"
-                    }
+                    {registro.servicios.length > 0
+                      ? registro.servicios
+                          .map(
+                            (s) =>
+                              servicios_disponibles.find((sd) => sd.value === s)
+                                ?.label,
+                          )
+                          .join(", ")
+                      : "Ninguno"}
                   </p>
                 </div>
               </div>
+
+              {/* Sección de Otros Miembros del Grupo */}
+              {registro.otros_miembros_grupo &&
+                registro.otros_miembros_grupo.length > 0 && (
+                  <div className="mt-6 pt-6 border-t border-zinc-300 dark:border-zinc-600">
+                    <h4 className="font-semibold text-zinc-900 dark:text-zinc-100 mb-4">
+                      Registro junto a:
+                    </h4>
+                    <div className="space-y-3">
+                      {registro.otros_miembros_grupo.map((miembro, index) => (
+                        <div
+                          key={index}
+                          className="bg-white dark:bg-zinc-800 p-4 rounded-lg border-2 border-zinc-200 dark:border-zinc-600"
+                        >
+                          <div className="flex items-center justify-between">
+                            <h5 className="font-medium text-zinc-900 dark:text-zinc-100">
+                              {miembro.nombres} {miembro.apellidos}
+                            </h5>
+                            <span className="text-xs text-zinc-500 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-700 px-2 py-1 rounded capitalize">
+                              {miembro.relacion_con_lider}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
               {/* Sección de Familiares */}
               {registro.familiares && registro.familiares.length > 0 && (
@@ -137,33 +196,52 @@ export default function RegistroExistente({
                   </h4>
                   <div className="space-y-3">
                     {registro.familiares.map((familiar, index) => (
-                      <div key={index} className="bg-white dark:bg-zinc-800 p-4 rounded-lg border-2 border-zinc-200 dark:border-zinc-600">
+                      <div
+                        key={index}
+                        className="bg-white dark:bg-zinc-800 p-4 rounded-lg border-2 border-zinc-200 dark:border-zinc-600"
+                      >
                         <div className="flex items-center justify-between mb-2">
                           <h5 className="font-medium text-zinc-900 dark:text-zinc-100">
                             {familiar.nombres} {familiar.apellidos}
                           </h5>
                           <span className="text-xs text-zinc-500 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-700 px-2 py-1 rounded">
-                            {opciones_parentesco.find(p => p.value === familiar.parentesco)?.label || familiar.parentesco}
+                            {opciones_parentesco.find(
+                              (p) => p.value === familiar.parentesco,
+                            )?.label || familiar.parentesco}
                           </span>
                         </div>
                         <div className="grid grid-cols-2 gap-2 text-sm text-zinc-600 dark:text-zinc-400">
                           <div>
-                            <span className="text-zinc-500 dark:text-zinc-500">Cédula:</span> {familiar.cedula}
+                            <span className="text-zinc-500 dark:text-zinc-500">
+                              Cédula:
+                            </span>{" "}
+                            {familiar.cedula}
                           </div>
                           <div>
-                            <span className="text-zinc-500 dark:text-zinc-500">Celular:</span> {familiar.celular}
+                            <span className="text-zinc-500 dark:text-zinc-500">
+                              Celular:
+                            </span>{" "}
+                            {familiar.celular}
                           </div>
                         </div>
-                        {familiar.servicios && familiar.servicios.length > 0 && (
-                          <div className="mt-2">
-                            <span className="text-xs text-zinc-500 dark:text-zinc-500">Servicios: </span>
-                            <span className="text-xs text-zinc-600 dark:text-zinc-400">
-                              {familiar.servicios.map(s => 
-                                servicios_disponibles.find(sd => sd.value === s)?.label
-                              ).join(", ")}
-                            </span>
-                          </div>
-                        )}
+                        {familiar.servicios &&
+                          familiar.servicios.length > 0 && (
+                            <div className="mt-2">
+                              <span className="text-xs text-zinc-500 dark:text-zinc-500">
+                                Servicios:{" "}
+                              </span>
+                              <span className="text-xs text-zinc-600 dark:text-zinc-400">
+                                {familiar.servicios
+                                  .map(
+                                    (s) =>
+                                      servicios_disponibles.find(
+                                        (sd) => sd.value === s,
+                                      )?.label,
+                                  )
+                                  .join(", ")}
+                              </span>
+                            </div>
+                          )}
                       </div>
                     ))}
                   </div>
@@ -171,16 +249,17 @@ export default function RegistroExistente({
               )}
 
               {/* Comentarios de Hospedaje */}
-              {registro.requiere_hospedaje && registro.comentarios_hospedaje && (
-                <div className="mt-6 pt-6 border-t border-zinc-300 dark:border-zinc-600">
-                  <h4 className="font-semibold text-zinc-900 dark:text-zinc-100 mb-2">
-                    Comentarios de Hospedaje:
-                  </h4>
-                  <p className="text-sm text-zinc-600 dark:text-zinc-400 bg-blue-50 dark:bg-blue-900/20 p-3 rounded border border-blue-200 dark:border-blue-800">
-                    {registro.comentarios_hospedaje}
-                  </p>
-                </div>
-              )}
+              {registro.requiere_hospedaje &&
+                registro.comentarios_hospedaje && (
+                  <div className="mt-6 pt-6 border-t border-zinc-300 dark:border-zinc-600">
+                    <h4 className="font-semibold text-zinc-900 dark:text-zinc-100 mb-2">
+                      Comentarios de Hospedaje:
+                    </h4>
+                    <p className="text-sm text-zinc-600 dark:text-zinc-400 bg-blue-50 dark:bg-blue-900/20 p-3 rounded border border-blue-200 dark:border-blue-800">
+                      {registro.comentarios_hospedaje}
+                    </p>
+                  </div>
+                )}
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">

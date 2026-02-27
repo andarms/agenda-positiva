@@ -1,10 +1,14 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useState } from "react";
+import { useParams } from "next/navigation";
 
 interface VerificarDocumentoProps {
-  onDocumentoVerificado: (tipo_documento: string, numero_documento: string, datos_persona?: any) => void;
+  onDocumentoVerificado: (
+    tipo_documento: string,
+    numero_documento: string,
+    datos_persona?: any,
+  ) => void;
   onRegistroExistente: (registro: any) => void;
   evento_titulo?: string;
   evento_fecha?: string;
@@ -24,7 +28,7 @@ export default function VerificarDocumento({
   onRegistroExistente,
   evento_titulo = "Conferencias",
   evento_fecha = "",
-  esta_verificando
+  esta_verificando,
 }: VerificarDocumentoProps) {
   const [tipo_documento, setTipoDocumento] = useState("");
   const [numero_documento, setNumeroDocumento] = useState("");
@@ -32,24 +36,40 @@ export default function VerificarDocumento({
   const params = useParams();
   const slug_evento = params.slug as string;
 
+  const manejar_cambio_numero_documento = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const valor = e.target.value.replace(/\D/g, ""); // Solo permite números
+    setNumeroDocumento(valor);
+  };
+
   const manejar_verificacion = async () => {
     if (!tipo_documento || numero_documento.length < 6) {
-      alert("Por favor seleccione el tipo de documento e ingrese un número válido");
+      alert(
+        "Por favor seleccione el tipo de documento e ingrese un número válido",
+      );
       return;
     }
 
     setVerificando(true);
     try {
-      const respuesta = await verificar_documento_en_base_datos(tipo_documento, numero_documento);
-      
+      const respuesta = await verificar_documento_en_base_datos(
+        tipo_documento,
+        numero_documento,
+      );
+
       if (respuesta.esta_registrada) {
         onRegistroExistente(respuesta);
       } else {
         // Pasar los datos de persona si existen (persona registrada pero no inscrita al evento)
-        onDocumentoVerificado(tipo_documento, numero_documento, respuesta.datos_persona);
+        onDocumentoVerificado(
+          tipo_documento,
+          numero_documento,
+          respuesta.datos_persona,
+        );
       }
     } catch (error) {
-      console.error('Error al verificar documento:', error);
+      console.error("Error al verificar documento:", error);
       alert("Error al verificar el documento. Intente nuevamente.");
     } finally {
       setVerificando(false);
@@ -57,15 +77,24 @@ export default function VerificarDocumento({
   };
 
   // Función para verificar el documento en la API
-  const verificar_documento_en_base_datos = async (tipo: string, numero: string) => {
-    const response = await fetch(`/api/eventos/${slug_evento}/verificar-documento`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ tipo_documento: tipo, numero_documento: numero })
-    });
+  const verificar_documento_en_base_datos = async (
+    tipo: string,
+    numero: string,
+  ) => {
+    const response = await fetch(
+      `/api/eventos/${slug_evento}/verificar-documento`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          tipo_documento: tipo,
+          numero_documento: numero,
+        }),
+      },
+    );
 
     if (!response.ok) {
-      throw new Error('Error en la verificación del documento');
+      throw new Error("Error en la verificación del documento");
     }
 
     return await response.json();
@@ -99,12 +128,16 @@ export default function VerificarDocumento({
               Verificar Documento
             </h2>
             <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-6">
-              Ingrese su tipo y número de documento para verificar si ya está registrado
+              Ingrese su tipo y número de documento para verificar si ya está
+              registrado
             </p>
-            
+
             <div className="space-y-4">
               <div>
-                <label htmlFor="tipo_documento" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+                <label
+                  htmlFor="tipo_documento"
+                  className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2"
+                >
                   Tipo de Documento *
                 </label>
                 <select
@@ -114,7 +147,7 @@ export default function VerificarDocumento({
                   className="w-full px-3 py-2 border-2 border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   disabled={verificando}
                 >
-                  {tipos_documento.map(tipo => (
+                  {tipos_documento.map((tipo) => (
                     <option key={tipo.value} value={tipo.value}>
                       {tipo.label}
                     </option>
@@ -123,23 +156,30 @@ export default function VerificarDocumento({
               </div>
 
               <div>
-                <label htmlFor="numero_documento" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+                <label
+                  htmlFor="numero_documento"
+                  className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2"
+                >
                   Número de Documento *
                 </label>
                 <input
-                  type="text"
+                  type="tel"
                   id="numero_documento"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
                   value={numero_documento}
-                  onChange={(e) => setNumeroDocumento(e.target.value)}
+                  onChange={manejar_cambio_numero_documento}
                   placeholder="Ingrese su número de documento"
                   className="w-full px-3 py-2 border-2 border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   disabled={verificando}
                 />
               </div>
-              
+
               <button
                 onClick={manejar_verificacion}
-                disabled={verificando || !tipo_documento || numero_documento.length < 6}
+                disabled={
+                  verificando || !tipo_documento || numero_documento.length < 6
+                }
                 className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium py-3 px-6 rounded-lg transition-colors focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed"
               >
                 {verificando ? "Verificando..." : "Verificar"}

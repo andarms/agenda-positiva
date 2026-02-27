@@ -16,6 +16,17 @@ export interface RegistroPreInscripcion {
   familiares?: FamiliarRegistrado[];
   comentarios_hospedaje?: string;
   fecha_registro: string;
+  grupo_asistencia_id?: number;
+  relacion_con_lider?: string;
+  otros_miembros_grupo?: MiembroGrupo[];
+}
+
+export interface MiembroGrupo {
+  nombres: string;
+  apellidos: string;
+  cedula: string;
+  relacion_con_lider: string;
+  requiere_hospedaje: boolean;
 }
 
 export interface FamiliarRegistrado {
