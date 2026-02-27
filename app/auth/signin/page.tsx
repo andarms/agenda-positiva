@@ -2,8 +2,9 @@
 
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
-export default function SignInPage() {
+function SignInContent() {
   const search_params = useSearchParams();
   const callback_url = search_params.get("callbackUrl") || "/admin";
   const error = search_params.get("error");
@@ -72,5 +73,13 @@ export default function SignInPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function SignInPage() {
+  return (
+    <Suspense fallback={<div>Cargando...</div>}>
+      <SignInContent />
+    </Suspense>
   );
 }

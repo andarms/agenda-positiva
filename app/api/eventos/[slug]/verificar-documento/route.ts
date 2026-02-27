@@ -97,7 +97,13 @@ export async function POST(
 
     // 4. Persona ya inscrita - obtener información completa del grupo
     const inscripcion_data = inscripcion[0];
-    let otros_miembros_grupo = [];
+    let otros_miembros_grupo: Array<{
+      nombres: string;
+      apellidos: string;
+      cedula: string;
+      relacion_con_lider: string | null;
+      requiere_hospedaje: number;
+    }> = [];
 
     // Si tiene grupo de asistencia, obtener otros miembros
     if (inscripcion_data.grupo_asistencia_id) {
