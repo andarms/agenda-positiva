@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { signOut, useSession } from "next-auth/react";
 
 interface NavigationItem {
   name: string;
@@ -21,19 +22,38 @@ const navigation: NavigationItem[] = [
 
 export function TopNavigation() {
   const pathname = usePathname();
+  const { data: session, status } = useSession();
+
+  const cerrar_session = async () => {
+    await signOut({
+      callbackUrl: "/",
+    });
+  };
+
+  if (status === "loading") {
+    return (
+      <nav className="bg-white dark:bg-zinc-800 border-b border-zinc-200 dark:border-zinc-700 sticky top-0 z-50">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-center h-16">
+            <span className="text-sm text-zinc-500">Cargando...</span>
+          </div>
+        </div>
+      </nav>
+    );
+  }
 
   return (
     <nav className="bg-white dark:bg-zinc-800 border-b border-zinc-200 dark:border-zinc-700 sticky top-0 z-50">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          <Link 
-            href="/" 
+          <Link
+            href="/"
             className="flex items-center gap-2 font-semibold text-zinc-900 dark:text-zinc-100"
           >
             <span className="text-xl">📋</span>
             Portal Conferencias
           </Link>
-          
+
           <div className="hidden md:flex items-center gap-2">
             {navigation.map((item) => {
               const isActive = pathname === item.href;
@@ -41,7 +61,7 @@ export function TopNavigation() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${ 
+                  className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                     isActive
                       ? "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
                       : "text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:text-zinc-100 dark:hover:bg-zinc-700"
@@ -54,6 +74,30 @@ export function TopNavigation() {
             })}
           </div>
 
+          {/* User Profile and Logout */}
+          {session?.user && (
+            <div className="flex items-center gap-4">
+              <div className="hidden md:flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+                {session.user.image && (
+                  <img
+                    src={session.user.image}
+                    alt={session.user.name || "Usuario"}
+                    className="w-6 h-6 rounded-full"
+                  />
+                )}
+                <span>{session.user.name}</span>
+              </div>
+
+              <button
+                onClick={cerrar_session}
+                className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/50 rounded-lg transition-colors"
+              >
+                <span>🚪</span>
+                <span className="hidden md:inline">Cerrar Sesión</span>
+              </button>
+            </div>
+          )}
+
           {/* Mobile menu button */}
           <div className="md:hidden">
             <button
@@ -61,8 +105,18 @@ export function TopNavigation() {
               className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
             >
               <span className="sr-only">Abrir menú</span>
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
               </svg>
             </button>
           </div>
@@ -74,11 +128,18 @@ export function TopNavigation() {
 
 export function MobileNavigation() {
   const pathname = usePathname();
+  const { data: session } = useSession();
+
+  const cerrar_session = async () => {
+    await signOut({
+      callbackUrl: "/",
+    });
+  };
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-white dark:bg-zinc-800 border-t border-zinc-200 dark:border-zinc-700 md:hidden z-50">
       <div className="grid grid-cols-6 h-16">
-        {navigation.map((item) => {
+        {navigation.slice(0, 5).map((item) => {
           const isActive = pathname === item.href;
           return (
             <Link
@@ -95,6 +156,17 @@ export function MobileNavigation() {
             </Link>
           );
         })}
+
+        {/* Mobile logout button */}
+        {session?.user && (
+          <button
+            onClick={cerrar_session}
+            className="flex flex-col items-center justify-center text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/50 transition-colors"
+          >
+            <span className="text-lg mb-1">🚪</span>
+            <span className="truncate px-1">Salir</span>
+          </button>
+        )}
       </div>
     </nav>
   );

@@ -7,16 +7,14 @@ export const metadata: Metadata = {
 };
 
 export default function AdminLayout({
-  children, 
+  children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
     <>
       <TopNavigation />
-      <main className="mb-16 md:mb-0">
-        {children}
-      </main>
+      <main className="mb-16 md:mb-0">{children}</main>
       <MobileNavigation />
     </>
   );
