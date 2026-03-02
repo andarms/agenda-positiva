@@ -103,7 +103,7 @@ const mockDatabase: PreRegistration[] = [
     servicios: ["musica", "jovenes"],
     familyMembers: [],
     comentariosHospedaje: "Necesito habitación cerca del auditorio",
-    fechaRegistro: "2026-02-20"
+    fechaRegistro: "2026-02-20",
   },
   {
     cedula: "87654321",
@@ -138,11 +138,11 @@ const mockDatabase: PreRegistration[] = [
         parentesco: "hijo",
         personId: 3,
         isSearching: false,
-        isFound: true
-      }
+        isFound: true,
+      },
     ],
     comentariosHospedaje: "Preferimos habitación familiar con dos camas",
-    fechaRegistro: "2026-02-18"
+    fechaRegistro: "2026-02-18",
   },
   {
     cedula: "55667788",
@@ -161,7 +161,7 @@ const mockDatabase: PreRegistration[] = [
     servicios: ["jovenes", "musica"],
     familyMembers: [],
     comentariosHospedaje: "",
-    fechaRegistro: "2026-02-19"
+    fechaRegistro: "2026-02-19",
   },
   {
     cedula: "99887766",
@@ -196,7 +196,7 @@ const mockDatabase: PreRegistration[] = [
         parentesco: "esposa",
         personId: 5,
         isSearching: false,
-        isFound: true
+        isFound: true,
       },
       {
         id: "fam3",
@@ -215,11 +215,11 @@ const mockDatabase: PreRegistration[] = [
         parentesco: "hijo",
         personId: null,
         isSearching: false,
-        isFound: false
-      }
+        isFound: false,
+      },
     ],
     comentariosHospedaje: "Viajamos en familia, necesitamos habitación amplia",
-    fechaRegistro: "2026-02-17"
+    fechaRegistro: "2026-02-17",
   },
   {
     cedula: "22334455",
@@ -238,7 +238,7 @@ const mockDatabase: PreRegistration[] = [
     servicios: ["audiovisuales", "protocolo"],
     familyMembers: [],
     comentariosHospedaje: "",
-    fechaRegistro: "2026-02-21"
+    fechaRegistro: "2026-02-21",
   },
   {
     cedula: "66778899",
@@ -273,12 +273,13 @@ const mockDatabase: PreRegistration[] = [
         parentesco: "padre",
         personId: null,
         isSearching: false,
-        isFound: false
-      }
+        isFound: false,
+      },
     ],
-    comentariosHospedaje: "Viajo con mi padre mayor, necesitamos habitación en planta baja",
-    fechaRegistro: "2026-02-16"
-  }
+    comentariosHospedaje:
+      "Viajo con mi padre mayor, necesitamos habitación en planta baja",
+    fechaRegistro: "2026-02-16",
+  },
 ];
 
 const tiposDocumento = [
@@ -352,9 +353,12 @@ const parentescoOptions = [
 ];
 
 export default function PreInscripcionPage() {
-  const [currentStep, setCurrentStep] = useState<"check" | "form" | "already-registered">("check");
+  const [currentStep, setCurrentStep] = useState<
+    "check" | "form" | "already-registered"
+  >("check");
   const [checkCedula, setCheckCedula] = useState("");
-  const [existingRegistration, setExistingRegistration] = useState<PreRegistration | null>(null);
+  const [existingRegistration, setExistingRegistration] =
+    useState<PreRegistration | null>(null);
   const [isCheckingCedula, setIsCheckingCedula] = useState(false);
 
   const [formData, setFormData] = useState<FormData>({
@@ -384,10 +388,10 @@ export default function PreInscripcionPage() {
 
   // Mock person database for search functionality
   const mockPersonsDatabase: PersonSearchResult[] = [
-    { 
-      id: 1, 
-      cedula: "12345678", 
-      nombres: "Juan Carlos", 
+    {
+      id: 1,
+      cedula: "12345678",
+      nombres: "Juan Carlos",
       apellidos: "García López",
       tipoDocumento: "cedula",
       sexo: "masculino",
@@ -397,12 +401,12 @@ export default function PreInscripcionPage() {
       municipio: "medellin",
       participaPrimerEvento: true,
       estaSirviendo: true,
-      servicios: ["musica"]
+      servicios: ["musica"],
     },
-    { 
-      id: 2, 
-      cedula: "87654321", 
-      nombres: "María Elena", 
+    {
+      id: 2,
+      cedula: "87654321",
+      nombres: "María Elena",
       apellidos: "Rodríguez Silva",
       tipoDocumento: "cedula",
       sexo: "femenino",
@@ -412,12 +416,12 @@ export default function PreInscripcionPage() {
       municipio: "bogota",
       participaPrimerEvento: false,
       estaSirviendo: false,
-      servicios: ["ninos"]
+      servicios: ["ninos"],
     },
-    { 
-      id: 3, 
-      cedula: "11223344", 
-      nombres: "Pedro Antonio", 
+    {
+      id: 3,
+      cedula: "11223344",
+      nombres: "Pedro Antonio",
       apellidos: "Martínez Pérez",
       tipoDocumento: "cedula",
       sexo: "masculino",
@@ -427,12 +431,12 @@ export default function PreInscripcionPage() {
       municipio: "cali",
       participaPrimerEvento: true,
       estaSirviendo: false,
-      servicios: []
+      servicios: [],
     },
-    { 
-      id: 4, 
-      cedula: "55667788", 
-      nombres: "Ana Sofía", 
+    {
+      id: 4,
+      cedula: "55667788",
+      nombres: "Ana Sofía",
       apellidos: "López González",
       tipoDocumento: "cedula",
       sexo: "femenino",
@@ -442,12 +446,12 @@ export default function PreInscripcionPage() {
       municipio: "barranquilla",
       participaPrimerEvento: false,
       estaSirviendo: true,
-      servicios: ["jovenes", "musica"]
+      servicios: ["jovenes", "musica"],
     },
-    { 
-      id: 5, 
-      cedula: "44556677", 
-      nombres: "Patricia", 
+    {
+      id: 5,
+      cedula: "44556677",
+      nombres: "Patricia",
       apellidos: "Morales Vega",
       tipoDocumento: "cedula",
       sexo: "femenino",
@@ -457,12 +461,12 @@ export default function PreInscripcionPage() {
       municipio: "cali",
       participaPrimerEvento: false,
       estaSirviendo: true,
-      servicios: ["ninos"]
+      servicios: ["ninos"],
     },
-    { 
-      id: 6, 
-      cedula: "99887766", 
-      nombres: "Carlos Alberto", 
+    {
+      id: 6,
+      cedula: "99887766",
+      nombres: "Carlos Alberto",
       apellidos: "Hernández Castro",
       tipoDocumento: "cedula",
       sexo: "masculino",
@@ -472,12 +476,12 @@ export default function PreInscripcionPage() {
       municipio: "cali",
       participaPrimerEvento: true,
       estaSirviendo: true,
-      servicios: ["seguridad", "logistica"]
+      servicios: ["seguridad", "logistica"],
     },
-    { 
-      id: 7, 
-      cedula: "22334455", 
-      nombres: "Luis Fernando", 
+    {
+      id: 7,
+      cedula: "22334455",
+      nombres: "Luis Fernando",
       apellidos: "Gómez Ruiz",
       tipoDocumento: "cedula",
       sexo: "masculino",
@@ -487,12 +491,12 @@ export default function PreInscripcionPage() {
       municipio: "bogota",
       participaPrimerEvento: true,
       estaSirviendo: true,
-      servicios: ["audiovisuales", "protocolo"]
+      servicios: ["audiovisuales", "protocolo"],
     },
-    { 
-      id: 8, 
-      cedula: "66778899", 
-      nombres: "Gloria Patricia", 
+    {
+      id: 8,
+      cedula: "66778899",
+      nombres: "Gloria Patricia",
       apellidos: "Vargas Medina",
       tipoDocumento: "cedula",
       sexo: "femenino",
@@ -502,12 +506,12 @@ export default function PreInscripcionPage() {
       municipio: "bogota",
       participaPrimerEvento: false,
       estaSirviendo: false,
-      servicios: []
+      servicios: [],
     },
-    { 
-      id: 9, 
-      cedula: "13579246", 
-      nombres: "Miguel Angel", 
+    {
+      id: 9,
+      cedula: "13579246",
+      nombres: "Miguel Angel",
       apellidos: "Torres Ramírez",
       tipoDocumento: "cedula",
       sexo: "masculino",
@@ -517,12 +521,12 @@ export default function PreInscripcionPage() {
       municipio: "medellin",
       participaPrimerEvento: true,
       estaSirviendo: true,
-      servicios: ["musica", "jovenes"]
+      servicios: ["musica", "jovenes"],
     },
-    { 
-      id: 10, 
-      cedula: "97531864", 
-      nombres: "Carmen Rosa", 
+    {
+      id: 10,
+      cedula: "97531864",
+      nombres: "Carmen Rosa",
       apellidos: "Jiménez Sánchez",
       tipoDocumento: "cedula",
       sexo: "femenino",
@@ -532,12 +536,12 @@ export default function PreInscripcionPage() {
       municipio: "barranquilla",
       participaPrimerEvento: false,
       estaSirviendo: true,
-      servicios: ["enfermeria", "limpieza"]
+      servicios: ["enfermeria", "limpieza"],
     },
-    { 
-      id: 11, 
-      cedula: "24681357", 
-      nombres: "Andrés Felipe", 
+    {
+      id: 11,
+      cedula: "24681357",
+      nombres: "Andrés Felipe",
       apellidos: "Muñoz Díaz",
       tipoDocumento: "cedula",
       sexo: "masculino",
@@ -547,12 +551,12 @@ export default function PreInscripcionPage() {
       municipio: "bogota",
       participaPrimerEvento: true,
       estaSirviendo: false,
-      servicios: []
+      servicios: [],
     },
-    { 
-      id: 12, 
-      cedula: "86420975", 
-      nombres: "Isabella", 
+    {
+      id: 12,
+      cedula: "86420975",
+      nombres: "Isabella",
       apellidos: "Cruz Peña",
       tipoDocumento: "cedula",
       sexo: "femenino",
@@ -562,22 +566,31 @@ export default function PreInscripcionPage() {
       municipio: "cali",
       participaPrimerEvento: false,
       estaSirviendo: true,
-      servicios: ["cocina", "protocolo"]
-    }
+      servicios: ["cocina", "protocolo"],
+    },
   ];
 
   // Check if cedula already exists in database
-  const checkCedulaInDatabase = async (cedula: string): Promise<PreRegistration | null> => {
+  const checkCedulaInDatabase = async (
+    cedula: string,
+  ): Promise<PreRegistration | null> => {
     // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    return mockDatabase.find(registration => registration.cedula === cedula) || null;
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    return (
+      mockDatabase.find((registration) => registration.cedula === cedula) ||
+      null
+    );
   };
 
   // Mock function to search for person by cedula
-  const searchPersonByCedula = async (cedula: string): Promise<PersonSearchResult | null> => {
+  const searchPersonByCedula = async (
+    cedula: string,
+  ): Promise<PersonSearchResult | null> => {
     // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 800));
-    return mockPersonsDatabase.find(person => person.cedula === cedula) || null;
+    await new Promise((resolve) => setTimeout(resolve, 800));
+    return (
+      mockPersonsDatabase.find((person) => person.cedula === cedula) || null
+    );
   };
 
   const handleCedulaCheck = async () => {
@@ -593,7 +606,7 @@ export default function PreInscripcionPage() {
         setExistingRegistration(existing);
         setCurrentStep("already-registered");
       } else {
-        setFormData(prev => ({ ...prev, numeroDocumento: checkCedula }));
+        setFormData((prev) => ({ ...prev, numeroDocumento: checkCedula }));
         setCurrentStep("form");
       }
     } catch (error) {
@@ -631,40 +644,48 @@ export default function PreInscripcionPage() {
     });
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >,
+  ) => {
     const { name, value, type } = e.target;
-    
+
     if (type === "checkbox") {
       const checked = (e.target as HTMLInputElement).checked;
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         [name]: checked,
         // Clear family members and accommodation comments if hospedaje is unchecked
-        ...(name === "requiereHospedaje" && !checked ? { 
-          viajaConEsposa: false, 
-          viajaConHijos: false, 
-          viajaConOtroFamiliar: false,
-          esposa: undefined,
-          hijos: [], 
-          otrosFamiliares: [],
-          comentariosHospedaje: "" 
-        } : {}),
+        ...(name === "requiereHospedaje" && !checked
+          ? {
+              viajaConEsposa: false,
+              viajaConHijos: false,
+              viajaConOtroFamiliar: false,
+              esposa: undefined,
+              hijos: [],
+              otrosFamiliares: [],
+              comentariosHospedaje: "",
+            }
+          : {}),
         // Clear specific family members when unchecked
         ...(name === "viajaConEsposa" && !checked ? { esposa: undefined } : {}),
         ...(name === "viajaConHijos" && !checked ? { hijos: [] } : {}),
-        ...(name === "viajaConOtroFamiliar" && !checked ? { otrosFamiliares: [] } : {})
+        ...(name === "viajaConOtroFamiliar" && !checked
+          ? { otrosFamiliares: [] }
+          : {}),
       }));
     } else {
-      setFormData(prev => ({ ...prev, [name]: value }));
+      setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
 
   const handleServiciosChange = (servicio: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       servicios: prev.servicios.includes(servicio)
-        ? prev.servicios.filter(s => s !== servicio)
-        : [...prev.servicios, servicio]
+        ? prev.servicios.filter((s) => s !== servicio)
+        : [...prev.servicios, servicio],
     }));
   };
 
@@ -690,84 +711,90 @@ export default function PreInscripcionPage() {
   });
 
   const addEsposa = () => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      esposa: createNewFamilyMember("esposa")
+      esposa: createNewFamilyMember("esposa"),
     }));
   };
 
   const addHijo = () => {
     const newHijo = createNewFamilyMember("hijo");
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      hijos: [...prev.hijos, newHijo]
+      hijos: [...prev.hijos, newHijo],
     }));
   };
 
   const addOtroFamiliar = () => {
     const newFamiliar = createNewFamilyMember("");
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      otrosFamiliares: [...prev.otrosFamiliares, newFamiliar]
+      otrosFamiliares: [...prev.otrosFamiliares, newFamiliar],
     }));
   };
 
   const removeHijo = (id: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      hijos: prev.hijos.filter(hijo => hijo.id !== id)
+      hijos: prev.hijos.filter((hijo) => hijo.id !== id),
     }));
   };
 
   const removeOtroFamiliar = (id: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      otrosFamiliares: prev.otrosFamiliares.filter(familiar => familiar.id !== id)
+      otrosFamiliares: prev.otrosFamiliares.filter(
+        (familiar) => familiar.id !== id,
+      ),
     }));
   };
 
   const updateEsposa = (updates: Partial<FamilyMember>) => {
     if (formData.esposa) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        esposa: { ...prev.esposa!, ...updates }
+        esposa: { ...prev.esposa!, ...updates },
       }));
     }
   };
 
   const updateHijo = (id: string, updates: Partial<FamilyMember>) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      hijos: prev.hijos.map(hijo =>
-        hijo.id === id ? { ...hijo, ...updates } : hijo
-      )
+      hijos: prev.hijos.map((hijo) =>
+        hijo.id === id ? { ...hijo, ...updates } : hijo,
+      ),
     }));
   };
 
   const updateOtroFamiliar = (id: string, updates: Partial<FamilyMember>) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      otrosFamiliares: prev.otrosFamiliares.map(familiar =>
-        familiar.id === id ? { ...familiar, ...updates } : familiar
-      )
+      otrosFamiliares: prev.otrosFamiliares.map((familiar) =>
+        familiar.id === id ? { ...familiar, ...updates } : familiar,
+      ),
     }));
   };
 
-  const handleFamilyMemberCedulaSearch = async (member: FamilyMember, cedula: string, updateFunction: (updates: Partial<FamilyMember>) => void) => {
+  const handleFamilyMemberCedulaSearch = async (
+    member: FamilyMember,
+    cedula: string,
+    updateFunction: (updates: Partial<FamilyMember>) => void,
+  ) => {
     // Update cedula immediately
-    updateFunction({ 
-      cedula, 
+    updateFunction({
+      cedula,
       isSearching: cedula.length >= 6,
       isFound: false,
       nombres: "",
-      personId: null
+      personId: null,
     });
 
     // Only search if cedula has reasonable length
     if (cedula.length >= 6) {
       try {
         const person = await searchPersonByCedula(cedula);
-        
+
         if (person) {
           updateFunction({
             nombres: person.nombres,
@@ -783,7 +810,7 @@ export default function PreInscripcionPage() {
             servicios: person.servicios,
             personId: person.id,
             isSearching: false,
-            isFound: true
+            isFound: true,
           });
         } else {
           updateFunction({
@@ -800,13 +827,13 @@ export default function PreInscripcionPage() {
             municipio: "bogota",
             participaPrimerEvento: false,
             estaSirviendo: false,
-            servicios: []
+            servicios: [],
           });
         }
       } catch (error) {
         updateFunction({
           isSearching: false,
-          isFound: false
+          isFound: false,
         });
       }
     }
@@ -815,7 +842,7 @@ export default function PreInscripcionPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     try {
       // Prepare submission data
       const newRegistration: PreRegistration = {
@@ -836,27 +863,28 @@ export default function PreInscripcionPage() {
         familyMembers: [
           ...(formData.esposa ? [formData.esposa] : []),
           ...formData.hijos,
-          ...formData.otrosFamiliares
+          ...formData.otrosFamiliares,
         ],
         comentariosHospedaje: formData.comentariosHospedaje.trim(),
-        fechaRegistro: new Date().toISOString().split('T')[0]
+        fechaRegistro: new Date().toISOString().split("T")[0],
       };
 
       // Simulate API call to save
       console.log("Saving registration:", newRegistration);
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
       // Add to mock database
       mockDatabase.push(newRegistration);
-      
+
       alert("¡Pre-inscripción enviada correctamente! Gracias por registrarte.");
-      
+
       // Reset to initial state
       startNewRegistration();
-      
     } catch (error) {
       console.error("Error submitting form:", error);
-      alert("Error al enviar la pre-inscripción. Por favor intente nuevamente.");
+      alert(
+        "Error al enviar la pre-inscripción. Por favor intente nuevamente.",
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -884,10 +912,13 @@ export default function PreInscripcionPage() {
               <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">
                 Ingrese su número de cédula para verificar si ya está registrado
               </p>
-              
+
               <div className="space-y-4">
                 <div>
-                  <label htmlFor="checkCedula" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+                  <label
+                    htmlFor="checkCedula"
+                    className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2"
+                  >
                     Número de Cédula
                   </label>
                   <input
@@ -900,7 +931,7 @@ export default function PreInscripcionPage() {
                     disabled={isCheckingCedula}
                   />
                 </div>
-                
+
                 <button
                   onClick={handleCedulaCheck}
                   disabled={isCheckingCedula || checkCedula.length < 6}
@@ -929,7 +960,8 @@ export default function PreInscripcionPage() {
                   Ya tienes una pre-inscripción registrada
                 </h2>
                 <p className="text-lg text-zinc-600 dark:text-zinc-400">
-                  Hola {existingRegistration.nombres} {existingRegistration.apellidos}
+                  Hola {existingRegistration.nombres}{" "}
+                  {existingRegistration.apellidos}
                 </p>
               </div>
 
@@ -939,88 +971,131 @@ export default function PreInscripcionPage() {
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                   <div>
-                    <span className="text-zinc-600 dark:text-zinc-400">Fecha de registro:</span>
-                    <p className="font-medium text-zinc-900 dark:text-zinc-100">{existingRegistration.fechaRegistro}</p>
+                    <span className="text-zinc-600 dark:text-zinc-400">
+                      Fecha de registro:
+                    </span>
+                    <p className="font-medium text-zinc-900 dark:text-zinc-100">
+                      {existingRegistration.fechaRegistro}
+                    </p>
                   </div>
                   <div>
-                    <span className="text-zinc-600 dark:text-zinc-400">Celular:</span>
-                    <p className="font-medium text-zinc-900 dark:text-zinc-100">{existingRegistration.celular}</p>
+                    <span className="text-zinc-600 dark:text-zinc-400">
+                      Celular:
+                    </span>
+                    <p className="font-medium text-zinc-900 dark:text-zinc-100">
+                      {existingRegistration.celular}
+                    </p>
                   </div>
                   <div>
-                    <span className="text-zinc-600 dark:text-zinc-400">Email:</span>
-                    <p className="font-medium text-zinc-900 dark:text-zinc-100">{existingRegistration.email}</p>
+                    <span className="text-zinc-600 dark:text-zinc-400">
+                      Email:
+                    </span>
+                    <p className="font-medium text-zinc-900 dark:text-zinc-100">
+                      {existingRegistration.email}
+                    </p>
                   </div>
                   <div>
-                    <span className="text-zinc-600 dark:text-zinc-400">Requiere hospedaje:</span>
+                    <span className="text-zinc-600 dark:text-zinc-400">
+                      Requiere hospedaje:
+                    </span>
                     <p className="font-medium text-zinc-900 dark:text-zinc-100">
                       {existingRegistration.requiereHospedaje ? "Sí" : "No"}
                     </p>
                   </div>
                   <div className="md:col-span-2">
-                    <span className="text-zinc-600 dark:text-zinc-400">Servicios:</span>
+                    <span className="text-zinc-600 dark:text-zinc-400">
+                      Servicios:
+                    </span>
                     <p className="font-medium text-zinc-900 dark:text-zinc-100">
-                      {existingRegistration.servicios.length > 0 
-                        ? existingRegistration.servicios.map(s => 
-                            serviciosDisponibles.find(sd => sd.value === s)?.label
-                          ).join(", ")
-                        : "Ninguno"
-                      }
+                      {existingRegistration.servicios.length > 0
+                        ? existingRegistration.servicios
+                            .map(
+                              (s) =>
+                                serviciosDisponibles.find(
+                                  (sd) => sd.value === s,
+                                )?.label,
+                            )
+                            .join(", ")
+                        : "Ninguno"}
                     </p>
                   </div>
                 </div>
 
                 {/* Family Members Section */}
-                {existingRegistration.familyMembers && existingRegistration.familyMembers.length > 0 && (
-                  <div className="mt-6 pt-6 border-t border-zinc-300 dark:border-zinc-600">
-                    <h4 className="font-semibold text-zinc-900 dark:text-zinc-100 mb-4">
-                      Familiares Registrados:
-                    </h4>
-                    <div className="space-y-3">
-                      {existingRegistration.familyMembers.map((member, index) => (
-                        <div key={index} className="bg-white dark:bg-zinc-800 p-4 rounded-lg border border-zinc-200 dark:border-zinc-600">
-                          <div className="flex items-center justify-between mb-2">
-                            <h5 className="font-medium text-zinc-900 dark:text-zinc-100">
-                              {member.nombres} {member.apellidos}
-                            </h5>
-                            <span className="text-xs text-zinc-500 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-700 px-2 py-1 rounded">
-                              {parentescoOptions.find(p => p.value === member.parentesco)?.label || member.parentesco}
-                            </span>
-                          </div>
-                          <div className="grid grid-cols-2 gap-2 text-sm text-zinc-600 dark:text-zinc-400">
-                            <div>
-                              <span className="text-zinc-500 dark:text-zinc-500">Cédula:</span> {member.cedula}
+                {existingRegistration.familyMembers &&
+                  existingRegistration.familyMembers.length > 0 && (
+                    <div className="mt-6 pt-6 border-t border-zinc-300 dark:border-zinc-600">
+                      <h4 className="font-semibold text-zinc-900 dark:text-zinc-100 mb-4">
+                        Familiares Registrados:
+                      </h4>
+                      <div className="space-y-3">
+                        {existingRegistration.familyMembers.map(
+                          (member, index) => (
+                            <div
+                              key={index}
+                              className="bg-white dark:bg-zinc-800 p-4 rounded-lg border border-zinc-200 dark:border-zinc-600"
+                            >
+                              <div className="flex items-center justify-between mb-2">
+                                <h5 className="font-medium text-zinc-900 dark:text-zinc-100">
+                                  {member.nombres} {member.apellidos}
+                                </h5>
+                                <span className="text-xs text-zinc-500 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-700 px-2 py-1 rounded">
+                                  {parentescoOptions.find(
+                                    (p) => p.value === member.parentesco,
+                                  )?.label || member.parentesco}
+                                </span>
+                              </div>
+                              <div className="grid grid-cols-2 gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+                                <div>
+                                  <span className="text-zinc-500 dark:text-zinc-500">
+                                    Cédula:
+                                  </span>{" "}
+                                  {member.cedula}
+                                </div>
+                                <div>
+                                  <span className="text-zinc-500 dark:text-zinc-500">
+                                    Celular:
+                                  </span>{" "}
+                                  {member.celular}
+                                </div>
+                              </div>
+                              {member.servicios &&
+                                member.servicios.length > 0 && (
+                                  <div className="mt-2">
+                                    <span className="text-xs text-zinc-500 dark:text-zinc-500">
+                                      Servicios:{" "}
+                                    </span>
+                                    <span className="text-xs text-zinc-600 dark:text-zinc-400">
+                                      {member.servicios
+                                        .map(
+                                          (s) =>
+                                            serviciosDisponibles.find(
+                                              (sd) => sd.value === s,
+                                            )?.label,
+                                        )
+                                        .join(", ")}
+                                    </span>
+                                  </div>
+                                )}
                             </div>
-                            <div>
-                              <span className="text-zinc-500 dark:text-zinc-500">Celular:</span> {member.celular}
-                            </div>
-                          </div>
-                          {member.servicios && member.servicios.length > 0 && (
-                            <div className="mt-2">
-                              <span className="text-xs text-zinc-500 dark:text-zinc-500">Servicios: </span>
-                              <span className="text-xs text-zinc-600 dark:text-zinc-400">
-                                {member.servicios.map(s => 
-                                  serviciosDisponibles.find(sd => sd.value === s)?.label
-                                ).join(", ")}
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                      ))}
+                          ),
+                        )}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
                 {/* Accommodation Comments */}
-                {existingRegistration.requiereHospedaje && existingRegistration.comentariosHospedaje && (
-                  <div className="mt-6 pt-6 border-t border-zinc-300 dark:border-zinc-600">
-                    <h4 className="font-semibold text-zinc-900 dark:text-zinc-100 mb-2">
-                      Comentarios de Hospedaje:
-                    </h4>
-                    <p className="text-sm text-zinc-600 dark:text-zinc-400 bg-blue-50 dark:bg-blue-900/20 p-3 rounded border border-blue-200 dark:border-blue-800">
-                      {existingRegistration.comentariosHospedaje}
-                    </p>
-                  </div>
-                )}
+                {existingRegistration.requiereHospedaje &&
+                  existingRegistration.comentariosHospedaje && (
+                    <div className="mt-6 pt-6 border-t border-zinc-300 dark:border-zinc-600">
+                      <h4 className="font-semibold text-zinc-900 dark:text-zinc-100 mb-2">
+                        Comentarios de Hospedaje:
+                      </h4>
+                      <p className="text-sm text-zinc-600 dark:text-zinc-400 bg-blue-50 dark:bg-blue-900/20 p-3 rounded border border-blue-200 dark:border-blue-800">
+                        {existingRegistration.comentariosHospedaje}
+                      </p>
+                    </div>
+                  )}
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4">
@@ -1071,7 +1146,10 @@ export default function PreInscripcionPage() {
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label htmlFor="nombres" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+                  <label
+                    htmlFor="nombres"
+                    className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2"
+                  >
                     Nombres *
                   </label>
                   <input
@@ -1085,7 +1163,10 @@ export default function PreInscripcionPage() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="apellidos" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+                  <label
+                    htmlFor="apellidos"
+                    className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2"
+                  >
                     Apellidos *
                   </label>
                   <input
@@ -1105,7 +1186,10 @@ export default function PreInscripcionPage() {
             <div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
-                  <label htmlFor="tipoDocumento" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+                  <label
+                    htmlFor="tipoDocumento"
+                    className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2"
+                  >
                     Tipo de Documento *
                   </label>
                   <select
@@ -1116,13 +1200,18 @@ export default function PreInscripcionPage() {
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   >
-                    {tiposDocumento.map(tipo => (
-                      <option key={tipo.value} value={tipo.value}>{tipo.label}</option>
+                    {tiposDocumento.map((tipo) => (
+                      <option key={tipo.value} value={tipo.value}>
+                        {tipo.label}
+                      </option>
                     ))}
                   </select>
                 </div>
                 <div>
-                  <label htmlFor="numeroDocumento" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+                  <label
+                    htmlFor="numeroDocumento"
+                    className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2"
+                  >
                     Número de Documento *
                   </label>
                   <input
@@ -1136,7 +1225,10 @@ export default function PreInscripcionPage() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="sexo" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+                  <label
+                    htmlFor="sexo"
+                    className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2"
+                  >
                     Genero
                   </label>
                   <select
@@ -1147,8 +1239,10 @@ export default function PreInscripcionPage() {
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   >
-                    {sexoOptions.map(option => (
-                      <option key={option.value} value={option.value}>{option.label}</option>
+                    {sexoOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
                     ))}
                   </select>
                 </div>
@@ -1162,7 +1256,10 @@ export default function PreInscripcionPage() {
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div>
-                  <label htmlFor="departamento" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+                  <label
+                    htmlFor="departamento"
+                    className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2"
+                  >
                     Departamento *
                   </label>
                   <select
@@ -1173,13 +1270,18 @@ export default function PreInscripcionPage() {
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   >
-                    {departamentos.map(dept => (
-                      <option key={dept.value} value={dept.value}>{dept.label}</option>
+                    {departamentos.map((dept) => (
+                      <option key={dept.value} value={dept.value}>
+                        {dept.label}
+                      </option>
                     ))}
                   </select>
                 </div>
                 <div>
-                  <label htmlFor="municipio" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+                  <label
+                    htmlFor="municipio"
+                    className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2"
+                  >
                     Municipio *
                   </label>
                   <select
@@ -1190,13 +1292,18 @@ export default function PreInscripcionPage() {
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   >
-                    {municipios.map(mun => (
-                      <option key={mun.value} value={mun.value}>{mun.label}</option>
+                    {municipios.map((mun) => (
+                      <option key={mun.value} value={mun.value}>
+                        {mun.label}
+                      </option>
                     ))}
                   </select>
                 </div>
                 <div>
-                  <label htmlFor="fechaNacimiento" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+                  <label
+                    htmlFor="fechaNacimiento"
+                    className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2"
+                  >
                     Fecha de Nacimiento *
                   </label>
                   <input
@@ -1210,7 +1317,10 @@ export default function PreInscripcionPage() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="celular" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+                  <label
+                    htmlFor="celular"
+                    className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2"
+                  >
                     Celular *
                   </label>
                   <input
@@ -1225,7 +1335,10 @@ export default function PreInscripcionPage() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+                  <label
+                    htmlFor="email"
+                    className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2"
+                  >
                     Correo Electronico
                   </label>
                   <input
@@ -1242,28 +1355,32 @@ export default function PreInscripcionPage() {
               </div>
             </div>
 
-
-            <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-6">Información de Hospedaje</h3>
+            <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-6">
+              Información de Hospedaje
+            </h3>
             <div className="flex items-center">
-                  <input
-                    type="checkbox"
-                    id="requiereHospedaje"
-                    name="requiereHospedaje"
-                    checked={formData.requiereHospedaje}
-                    onChange={handleInputChange}
-                    className="h-4 w-4 text-blue-600 bg-zinc-100 border-zinc-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-zinc-800 focus:ring-2 dark:bg-zinc-700 dark:border-zinc-600"
-                  />
-                  <label htmlFor="requiereHospedaje" className="ml-2 text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                    Requiere hospedaje
-                  </label>
-                </div>
+              <input
+                type="checkbox"
+                id="requiereHospedaje"
+                name="requiereHospedaje"
+                checked={formData.requiereHospedaje}
+                onChange={handleInputChange}
+                className="h-4 w-4 text-blue-600 bg-zinc-100 border-zinc-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-zinc-800 focus:ring-2 dark:bg-zinc-700 dark:border-zinc-600"
+              />
+              <label
+                htmlFor="requiereHospedaje"
+                className="ml-2 text-sm font-medium text-zinc-700 dark:text-zinc-300"
+              >
+                Requiere hospedaje
+              </label>
+            </div>
             {/* Family Travel Questions - Only shown if accommodation is required */}
             {formData.requiereHospedaje && (
               <div>
                 <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-6">
                   Información de Acompañantes
                 </h3>
-                
+
                 {/* Three Simple Questions */}
                 <div className="space-y-4 mb-8">
                   <div className="flex items-center">
@@ -1275,7 +1392,10 @@ export default function PreInscripcionPage() {
                       onChange={handleInputChange}
                       className="h-4 w-4 text-blue-600 bg-zinc-100 border-zinc-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-zinc-800 focus:ring-2 dark:bg-zinc-700 dark:border-zinc-600"
                     />
-                    <label htmlFor="viajaConEsposa" className="ml-2 text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                    <label
+                      htmlFor="viajaConEsposa"
+                      className="ml-2 text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                    >
                       ¿Viaja con su esposa?
                     </label>
                   </div>
@@ -1289,7 +1409,10 @@ export default function PreInscripcionPage() {
                       onChange={handleInputChange}
                       className="h-4 w-4 text-blue-600 bg-zinc-100 border-zinc-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-zinc-800 focus:ring-2 dark:bg-zinc-700 dark:border-zinc-600"
                     />
-                    <label htmlFor="viajaConHijos" className="ml-2 text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                    <label
+                      htmlFor="viajaConHijos"
+                      className="ml-2 text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                    >
                       ¿Viaja con sus hijos?
                     </label>
                   </div>
@@ -1303,7 +1426,10 @@ export default function PreInscripcionPage() {
                       onChange={handleInputChange}
                       className="h-4 w-4 text-blue-600 bg-zinc-100 border-zinc-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-zinc-800 focus:ring-2 dark:bg-zinc-700 dark:border-zinc-600"
                     />
-                    <label htmlFor="viajaConOtroFamiliar" className="ml-2 text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                    <label
+                      htmlFor="viajaConOtroFamiliar"
+                      className="ml-2 text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                    >
                       ¿Viaja con algún otro familiar?
                     </label>
                   </div>
@@ -1326,14 +1452,21 @@ export default function PreInscripcionPage() {
                         </button>
                       )}
                     </div>
-                    
+
                     {formData.esposa && (
                       <div className="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-lg border border-blue-200 dark:border-blue-800">
                         <div className="flex items-center justify-between mb-4">
-                          <h5 className="font-medium text-zinc-900 dark:text-zinc-100">Esposa</h5>
+                          <h5 className="font-medium text-zinc-900 dark:text-zinc-100">
+                            Esposa
+                          </h5>
                           <button
                             type="button"
-                            onClick={() => setFormData(prev => ({ ...prev, esposa: undefined }))}
+                            onClick={() =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                esposa: undefined,
+                              }))
+                            }
                             className="text-red-600 hover:text-red-700 text-sm"
                           >
                             Eliminar
@@ -1349,7 +1482,13 @@ export default function PreInscripcionPage() {
                             <input
                               type="text"
                               value={formData.esposa!.cedula}
-                              onChange={(e) => handleFamilyMemberCedulaSearch(formData.esposa!, e.target.value, updateEsposa)}
+                              onChange={(e) =>
+                                handleFamilyMemberCedulaSearch(
+                                  formData.esposa!,
+                                  e.target.value,
+                                  updateEsposa,
+                                )
+                              }
                               placeholder="Ingrese número de cédula"
                               className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             />
@@ -1364,56 +1503,81 @@ export default function PreInscripcionPage() {
                               ✓ Persona encontrada en el sistema
                             </p>
                           )}
-                          {!formData.esposa!.isFound && formData.esposa!.cedula.length >= 6 && !formData.esposa!.isSearching && (
-                            <p className="text-sm text-orange-600 dark:text-orange-400 mt-1">
-                              ⚠ Persona no encontrada - complete la información
-                            </p>
-                          )}
+                          {!formData.esposa!.isFound &&
+                            formData.esposa!.cedula.length >= 6 &&
+                            !formData.esposa!.isSearching && (
+                              <p className="text-sm text-orange-600 dark:text-orange-400 mt-1">
+                                ⚠ Persona no encontrada - complete la
+                                información
+                              </p>
+                            )}
                         </div>
 
                         {formData.esposa!.isFound ? (
                           /* Show found person data */
                           <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
-                            <h6 className="font-medium text-green-800 dark:text-green-200 mb-2">Información Registrada</h6>
+                            <h6 className="font-medium text-green-800 dark:text-green-200 mb-2">
+                              Información Registrada
+                            </h6>
                             <div className="grid grid-cols-2 gap-2 text-sm">
                               <div>
-                                <span className="text-zinc-600 dark:text-zinc-400">Nombre:</span>
-                                <p className="font-medium">{formData.esposa!.nombres} {formData.esposa!.apellidos}</p>
+                                <span className="text-zinc-600 dark:text-zinc-400">
+                                  Nombre:
+                                </span>
+                                <p className="font-medium">
+                                  {formData.esposa!.nombres}{" "}
+                                  {formData.esposa!.apellidos}
+                                </p>
                               </div>
                               <div>
-                                <span className="text-zinc-600 dark:text-zinc-400">Celular:</span>
-                                <p className="font-medium">{formData.esposa!.celular}</p>
+                                <span className="text-zinc-600 dark:text-zinc-400">
+                                  Celular:
+                                </span>
+                                <p className="font-medium">
+                                  {formData.esposa!.celular}
+                                </p>
                               </div>
                             </div>
                           </div>
-                        ) : formData.esposa!.cedula.length >= 6 && !formData.esposa!.isSearching ? (
+                        ) : formData.esposa!.cedula.length >= 6 &&
+                          !formData.esposa!.isSearching ? (
                           /* Show registration form for new person */
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <input
                               type="text"
                               value={formData.esposa!.nombres}
-                              onChange={(e) => updateEsposa({ nombres: e.target.value })}
+                              onChange={(e) =>
+                                updateEsposa({ nombres: e.target.value })
+                              }
                               placeholder="Nombres *"
                               className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             />
                             <input
                               type="text"
                               value={formData.esposa!.apellidos}
-                              onChange={(e) => updateEsposa({ apellidos: e.target.value })}
+                              onChange={(e) =>
+                                updateEsposa({ apellidos: e.target.value })
+                              }
                               placeholder="Apellidos *"
                               className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             />
                             <input
                               type="tel"
                               value={formData.esposa!.celular}
-                              onChange={(e) => updateEsposa({ celular: e.target.value })}
+                              onChange={(e) =>
+                                updateEsposa({ celular: e.target.value })
+                              }
                               placeholder="Celular *"
                               className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             />
                             <input
                               type="date"
                               value={formData.esposa!.fechaNacimiento}
-                              onChange={(e) => updateEsposa({ fechaNacimiento: e.target.value })}
+                              onChange={(e) =>
+                                updateEsposa({
+                                  fechaNacimiento: e.target.value,
+                                })
+                              }
                               className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             />
                           </div>
@@ -1438,7 +1602,7 @@ export default function PreInscripcionPage() {
                         + Agregar Hijo
                       </button>
                     </div>
-                    
+
                     {formData.hijos.length === 0 ? (
                       <div className="text-center py-6 text-zinc-500 dark:text-zinc-400 bg-zinc-50 dark:bg-zinc-700/50 rounded-lg">
                         <p>Ningún hijo agregado</p>
@@ -1446,9 +1610,14 @@ export default function PreInscripcionPage() {
                     ) : (
                       <div className="space-y-4">
                         {formData.hijos.map((hijo, index) => (
-                          <div key={hijo.id} className="bg-green-50 dark:bg-green-900/20 p-6 rounded-lg border border-green-200 dark:border-green-800">
+                          <div
+                            key={hijo.id}
+                            className="bg-green-50 dark:bg-green-900/20 p-6 rounded-lg border border-green-200 dark:border-green-800"
+                          >
                             <div className="flex items-center justify-between mb-4">
-                              <h5 className="font-medium text-zinc-900 dark:text-zinc-100">Hijo {index + 1}</h5>
+                              <h5 className="font-medium text-zinc-900 dark:text-zinc-100">
+                                Hijo {index + 1}
+                              </h5>
                               <button
                                 type="button"
                                 onClick={() => removeHijo(hijo.id)}
@@ -1457,7 +1626,7 @@ export default function PreInscripcionPage() {
                                 Eliminar
                               </button>
                             </div>
-                            
+
                             <div className="mb-4">
                               <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
                                 Cédula *
@@ -1466,7 +1635,13 @@ export default function PreInscripcionPage() {
                                 <input
                                   type="text"
                                   value={hijo.cedula}
-                                  onChange={(e) => handleFamilyMemberCedulaSearch(hijo, e.target.value, (updates) => updateHijo(hijo.id, updates))}
+                                  onChange={(e) =>
+                                    handleFamilyMemberCedulaSearch(
+                                      hijo,
+                                      e.target.value,
+                                      (updates) => updateHijo(hijo.id, updates),
+                                    )
+                                  }
                                   placeholder="Ingrese número de cédula"
                                   className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                 />
@@ -1481,45 +1656,67 @@ export default function PreInscripcionPage() {
                                   ✓ Persona encontrada
                                 </p>
                               )}
-                              {!hijo.isFound && hijo.cedula.length >= 6 && !hijo.isSearching && (
-                                <p className="text-sm text-orange-600 dark:text-orange-400 mt-1">
-                                  ⚠ Complete la información
-                                </p>
-                              )}
+                              {!hijo.isFound &&
+                                hijo.cedula.length >= 6 &&
+                                !hijo.isSearching && (
+                                  <p className="text-sm text-orange-600 dark:text-orange-400 mt-1">
+                                    ⚠ Complete la información
+                                  </p>
+                                )}
                             </div>
 
                             {hijo.isFound ? (
                               <div className="bg-white dark:bg-zinc-800 p-3 rounded border">
-                                <p className="font-medium">{hijo.nombres} {hijo.apellidos}</p>
-                                <p className="text-sm text-zinc-600">{hijo.celular}</p>
+                                <p className="font-medium">
+                                  {hijo.nombres} {hijo.apellidos}
+                                </p>
+                                <p className="text-sm text-zinc-600">
+                                  {hijo.celular}
+                                </p>
                               </div>
                             ) : hijo.cedula.length >= 6 && !hijo.isSearching ? (
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <input
                                   type="text"
                                   value={hijo.nombres}
-                                  onChange={(e) => updateHijo(hijo.id, { nombres: e.target.value })}
+                                  onChange={(e) =>
+                                    updateHijo(hijo.id, {
+                                      nombres: e.target.value,
+                                    })
+                                  }
                                   placeholder="Nombres *"
                                   className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100"
                                 />
                                 <input
                                   type="text"
                                   value={hijo.apellidos}
-                                  onChange={(e) => updateHijo(hijo.id, { apellidos: e.target.value })}
+                                  onChange={(e) =>
+                                    updateHijo(hijo.id, {
+                                      apellidos: e.target.value,
+                                    })
+                                  }
                                   placeholder="Apellidos *"
                                   className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100"
                                 />
                                 <input
                                   type="tel"
                                   value={hijo.celular}
-                                  onChange={(e) => updateHijo(hijo.id, { celular: e.target.value })}
+                                  onChange={(e) =>
+                                    updateHijo(hijo.id, {
+                                      celular: e.target.value,
+                                    })
+                                  }
                                   placeholder="Celular *"
                                   className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100"
                                 />
                                 <input
                                   type="date"
                                   value={hijo.fechaNacimiento}
-                                  onChange={(e) => updateHijo(hijo.id, { fechaNacimiento: e.target.value })}
+                                  onChange={(e) =>
+                                    updateHijo(hijo.id, {
+                                      fechaNacimiento: e.target.value,
+                                    })
+                                  }
                                   className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100"
                                 />
                               </div>
@@ -1546,7 +1743,7 @@ export default function PreInscripcionPage() {
                         + Agregar Familiar
                       </button>
                     </div>
-                    
+
                     {formData.otrosFamiliares.length === 0 ? (
                       <div className="text-center py-6 text-zinc-500 dark:text-zinc-400 bg-zinc-50 dark:bg-zinc-700/50 rounded-lg">
                         <p>Ningún familiar agregado</p>
@@ -1554,9 +1751,14 @@ export default function PreInscripcionPage() {
                     ) : (
                       <div className="space-y-4">
                         {formData.otrosFamiliares.map((familiar, index) => (
-                          <div key={familiar.id} className="bg-purple-50 dark:bg-purple-900/20 p-6 rounded-lg border border-purple-200 dark:border-purple-800">
+                          <div
+                            key={familiar.id}
+                            className="bg-purple-50 dark:bg-purple-900/20 p-6 rounded-lg border border-purple-200 dark:border-purple-800"
+                          >
                             <div className="flex items-center justify-between mb-4">
-                              <h5 className="font-medium text-zinc-900 dark:text-zinc-100">Familiar {index + 1}</h5>
+                              <h5 className="font-medium text-zinc-900 dark:text-zinc-100">
+                                Familiar {index + 1}
+                              </h5>
                               <button
                                 type="button"
                                 onClick={() => removeOtroFamiliar(familiar.id)}
@@ -1565,7 +1767,7 @@ export default function PreInscripcionPage() {
                                 Eliminar
                               </button>
                             </div>
-                            
+
                             <div className="mb-4">
                               <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
                                 Cédula *
@@ -1574,7 +1776,17 @@ export default function PreInscripcionPage() {
                                 <input
                                   type="text"
                                   value={familiar.cedula}
-                                  onChange={(e) => handleFamilyMemberCedulaSearch(familiar, e.target.value, (updates) => updateOtroFamiliar(familiar.id, updates))}
+                                  onChange={(e) =>
+                                    handleFamilyMemberCedulaSearch(
+                                      familiar,
+                                      e.target.value,
+                                      (updates) =>
+                                        updateOtroFamiliar(
+                                          familiar.id,
+                                          updates,
+                                        ),
+                                    )
+                                  }
                                   placeholder="Ingrese número de cédula"
                                   className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                 />
@@ -1589,46 +1801,69 @@ export default function PreInscripcionPage() {
                                   ✓ Persona encontrada
                                 </p>
                               )}
-                              {!familiar.isFound && familiar.cedula.length >= 6 && !familiar.isSearching && (
-                                <p className="text-sm text-orange-600 dark:text-orange-400 mt-1">
-                                  ⚠ Complete la información
-                                </p>
-                              )}
+                              {!familiar.isFound &&
+                                familiar.cedula.length >= 6 &&
+                                !familiar.isSearching && (
+                                  <p className="text-sm text-orange-600 dark:text-orange-400 mt-1">
+                                    ⚠ Complete la información
+                                  </p>
+                                )}
                             </div>
 
                             {familiar.isFound ? (
                               <div className="bg-white dark:bg-zinc-800 p-3 rounded border">
-                                <p className="font-medium">{familiar.nombres} {familiar.apellidos}</p>
-                                <p className="text-sm text-zinc-600">{familiar.celular}</p>
+                                <p className="font-medium">
+                                  {familiar.nombres} {familiar.apellidos}
+                                </p>
+                                <p className="text-sm text-zinc-600">
+                                  {familiar.celular}
+                                </p>
                               </div>
-                            ) : familiar.cedula.length >= 6 && !familiar.isSearching ? (
+                            ) : familiar.cedula.length >= 6 &&
+                              !familiar.isSearching ? (
                               <div className="space-y-4">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                   <input
                                     type="text"
                                     value={familiar.nombres}
-                                    onChange={(e) => updateOtroFamiliar(familiar.id, { nombres: e.target.value })}
+                                    onChange={(e) =>
+                                      updateOtroFamiliar(familiar.id, {
+                                        nombres: e.target.value,
+                                      })
+                                    }
                                     placeholder="Nombres *"
                                     className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100"
                                   />
                                   <input
                                     type="text"
                                     value={familiar.apellidos}
-                                    onChange={(e) => updateOtroFamiliar(familiar.id, { apellidos: e.target.value })}
+                                    onChange={(e) =>
+                                      updateOtroFamiliar(familiar.id, {
+                                        apellidos: e.target.value,
+                                      })
+                                    }
                                     placeholder="Apellidos *"
                                     className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100"
                                   />
                                   <input
                                     type="tel"
                                     value={familiar.celular}
-                                    onChange={(e) => updateOtroFamiliar(familiar.id, { celular: e.target.value })}
+                                    onChange={(e) =>
+                                      updateOtroFamiliar(familiar.id, {
+                                        celular: e.target.value,
+                                      })
+                                    }
                                     placeholder="Celular *"
                                     className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100"
                                   />
                                   <input
                                     type="date"
                                     value={familiar.fechaNacimiento}
-                                    onChange={(e) => updateOtroFamiliar(familiar.id, { fechaNacimiento: e.target.value })}
+                                    onChange={(e) =>
+                                      updateOtroFamiliar(familiar.id, {
+                                        fechaNacimiento: e.target.value,
+                                      })
+                                    }
                                     className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100"
                                   />
                                 </div>
@@ -1638,11 +1873,18 @@ export default function PreInscripcionPage() {
                                   </label>
                                   <select
                                     value={familiar.parentesco}
-                                    onChange={(e) => updateOtroFamiliar(familiar.id, { parentesco: e.target.value })}
+                                    onChange={(e) =>
+                                      updateOtroFamiliar(familiar.id, {
+                                        parentesco: e.target.value,
+                                      })
+                                    }
                                     className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100"
                                   >
-                                    {parentescoOptions.map(option => (
-                                      <option key={option.value} value={option.value}>
+                                    {parentescoOptions.map((option) => (
+                                      <option
+                                        key={option.value}
+                                        value={option.value}
+                                      >
                                         {option.label}
                                       </option>
                                     ))}
@@ -1678,10 +1920,11 @@ export default function PreInscripcionPage() {
             {/* Services */}
             <div>
               <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-6">
-                Actualmente en la iglesia está participando de alguno de estos servicios?
+                Actualmente en la iglesia está participando de alguno de estos
+                servicios?
               </h3>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                {serviciosDisponibles.map(servicio => (
+                {serviciosDisponibles.map((servicio) => (
                   <div key={servicio.value} className="flex items-center">
                     <input
                       type="checkbox"
@@ -1690,37 +1933,14 @@ export default function PreInscripcionPage() {
                       onChange={() => handleServiciosChange(servicio.value)}
                       className="h-4 w-4 text-blue-600 bg-zinc-100 border-zinc-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-zinc-800 focus:ring-2 dark:bg-zinc-700 dark:border-zinc-600"
                     />
-                    <label htmlFor={`servicio-${servicio.value}`} className="ml-2 text-sm text-zinc-700 dark:text-zinc-300">
+                    <label
+                      htmlFor={`servicio-${servicio.value}`}
+                      className="ml-2 text-sm text-zinc-700 dark:text-zinc-300"
+                    >
                       {servicio.label}
                     </label>
                   </div>
                 ))}
-              </div>
-
-              
-            </div>
-
-
-            {/* Event Preferences */}
-            <div>
-              <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-6">
-                Preferencias del Evento
-              </h3>
-              <div className="space-y-4">
-                <div className="flex items-center">
-                  <input
-                    type="checkbox"
-                    id="participaPrimerEvento"
-                    name="participaPrimerEvento"
-                    checked={formData.participaPrimerEvento}
-                    onChange={handleInputChange}
-                    className="h-4 w-4 text-blue-600 bg-zinc-100 border-zinc-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-zinc-800 focus:ring-2 dark:bg-zinc-700 dark:border-zinc-600"
-                  />
-                  <label htmlFor="participaPrimerEvento" className="ml-2 text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                    Participa en primer evento (opcional)
-                  </label>
-                </div>
-                
               </div>
             </div>
 

@@ -3,6 +3,7 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --button-primary: #c7683d;
 }
 
 @theme inline {
@@ -16,6 +17,7 @@
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    --button-primary: #d67e52;
   }
 }
 
@@ -26,4 +28,26 @@ body {
   font-family: "Montserrat", sans-serif;
   height: 100%;
   width: 100%;
+}
+
+/* Button utility classes */
+.btn-primary {
+  background-color: var(--button-primary);
+  color: white;
+  transition: all 0.2s duration;
+}
+
+.btn-primary:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-primary:focus {
+  outline: 2px solid var(--button-primary);
+  outline-offset: 2px;
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import GrupoAsistencia from "./GrupoAsistencia";
@@ -106,6 +106,50 @@ export default function FormularioInscripcion({
     comentarios_hospedaje: "",
     ...datos_iniciales,
   });
+
+  const [colombiaData, setColombiaData] = useState<any[]>([]);
+  const [departamentos, setDepartamentos] = useState<any[]>([]);
+  const [municipios, setMunicipios] = useState<any[]>([]);
+
+  useEffect(() => {
+    const loadColombiaData = async () => {
+      try {
+        const response = await fetch("/colombia.min.json");
+        const data = await response.json();
+        setColombiaData(data);
+
+        // Set departamentos with "Seleccionar" and "Internacional" options
+        const deptOptions = [
+          { value: "", label: "Seleccionar departamento" },
+          { value: "internacional", label: "Internacional" },
+          ...data.map((dept: any) => ({
+            value: dept.departamento.toLowerCase(),
+            label: dept.departamento,
+          })),
+        ];
+        setDepartamentos(deptOptions);
+
+        // Set initial municipios for Cundinamarca
+        const initialDept = data.find(
+          (d: any) => d.departamento.toLowerCase() === "cundinamarca",
+        );
+        if (initialDept) {
+          const munOptions = [
+            { value: "", label: "Seleccionar municipio" },
+            ...initialDept.ciudades.map((ciudad: string) => ({
+              value: ciudad.toLowerCase(),
+              label: ciudad,
+            })),
+          ];
+          setMunicipios(munOptions);
+        }
+      } catch (error) {
+        console.error("Error loading Colombia data:", error);
+      }
+    };
+
+    loadColombiaData();
+  }, []);
 
   const handle_input_change = (
     e: React.ChangeEvent<
@@ -239,14 +283,43 @@ export default function FormularioInscripcion({
                 <InformacionPersonal
                   datos={extraerDatosPersonales(datos_formulario)}
                   onChange={(campo, valor) => {
-                    set_datos_formulario((prev) => ({
-                      ...prev,
-                      [campo]: valor,
-                    }));
+                    if (campo === "departamento") {
+                      // Handle department change to update municipalities
+                      set_datos_formulario((prev) => ({
+                        ...prev,
+                        departamento: valor,
+                        municipio: "",
+                      }));
+                      if (valor === "internacional") {
+                        // For internacional, just set empty text field option
+                        setMunicipios([]);
+                      } else {
+                        const deptData = colombiaData.find(
+                          (d: any) => d.departamento.toLowerCase() === valor,
+                        );
+                        if (deptData) {
+                          const munOptions = [
+                            { value: "", label: "Seleccionar municipio" },
+                            ...deptData.ciudades.map((ciudad: string) => ({
+                              value: ciudad.toLowerCase(),
+                              label: ciudad,
+                            })),
+                          ];
+                          setMunicipios(munOptions);
+                        }
+                      }
+                    } else {
+                      set_datos_formulario((prev) => ({
+                        ...prev,
+                        [campo]: valor,
+                      }));
+                    }
                   }}
                   mostrarEmail={true}
                   titulo="Información Personal"
                   subtitulo="Complete sus datos personales"
+                  departamentos={departamentos}
+                  municipios={municipios}
                 />
 
                 {/* Información de Hospedaje */}
@@ -317,7 +390,11 @@ export default function FormularioInscripcion({
                   <button
                     type="submit"
                     disabled={esta_enviando}
-                    className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium py-3 px-6 rounded-lg transition-colors focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed"
+                    className="w-full text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed hover:opacity-90 disabled:opacity-60"
+                    style={{
+                      backgroundColor: "var(--button-primary)",
+                      focusRingColor: "var(--button-primary)",
+                    }}
                   >
                     {esta_enviando ? "Enviando..." : "Enviar Pre-inscripción"}
                   </button>

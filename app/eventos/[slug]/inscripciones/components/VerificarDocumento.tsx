@@ -199,7 +199,8 @@ export default function VerificarDocumento({
                     !tipo_documento ||
                     numero_documento.length < 6
                   }
-                  className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium py-3 px-6 rounded-lg transition-colors focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed"
+                  className="w-full text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed hover:opacity-90 disabled:opacity-60"
+                  style={{ backgroundColor: "var(--button-primary)" }}
                 >
                   {verificando ? "Verificando..." : "Verificar"}
                 </button>

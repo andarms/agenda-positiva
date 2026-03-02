@@ -337,7 +337,8 @@ export default function RegistroExistente({
               <div className="flex flex-col sm:flex-row gap-4">
                 <button
                   onClick={onIniciarNuevoRegistro}
-                  className="flex-1 bg-zinc-600 hover:bg-zinc-700 text-white font-medium py-3 px-6 rounded-lg transition-colors focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2"
+                  className="flex-1 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 hover:opacity-90"
+                  style={{ backgroundColor: "var(--button-primary)" }}
                 >
                   Registrar otra persona
                 </button>
