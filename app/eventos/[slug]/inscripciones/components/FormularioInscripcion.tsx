@@ -393,7 +393,6 @@ export default function FormularioInscripcion({
                     className="w-full text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed hover:opacity-90 disabled:opacity-60"
                     style={{
                       backgroundColor: "var(--button-primary)",
-                      focusRingColor: "var(--button-primary)",
                     }}
                   >
                     {esta_enviando ? "Enviando..." : "Enviar Pre-inscripción"}
