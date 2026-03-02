@@ -1,9 +1,13 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import GrupoAsistencia from './GrupoAsistencia';
-import InformacionPersonal, { DatosPersonales, extraerDatosPersonales } from './InformacionPersonal';
-
+import { useState } from "react";
+import Image from "next/image";
+import { ArrowLeftIcon } from "@heroicons/react/24/outline";
+import GrupoAsistencia from "./GrupoAsistencia";
+import InformacionPersonal, {
+  DatosPersonales,
+  extraerDatosPersonales,
+} from "./InformacionPersonal";
 
 export interface DatosFormulario {
   nombres: string;
@@ -33,7 +37,7 @@ export interface MiembroFamiliar {
   id: string;
   cedula: string;
   nombres: string;
-  apellidos: string;  
+  apellidos: string;
   tipo_documento: string;
   sexo: string;
   fecha_nacimiento: string;
@@ -77,7 +81,7 @@ export default function FormularioInscripcion({
   on_enviar,
   esta_enviando,
   evento_titulo = "Conferencias",
-  datos_prellenados = false
+  datos_prellenados = false,
 }: FormularioInscripcionProps) {
   const [datos_formulario, set_datos_formulario] = useState<DatosFormulario>({
     nombres: "",
@@ -100,43 +104,53 @@ export default function FormularioInscripcion({
     hijos: [],
     otros_familiares: [],
     comentarios_hospedaje: "",
-    ...datos_iniciales
+    ...datos_iniciales,
   });
 
-  const handle_input_change = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handle_input_change = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >,
+  ) => {
     const { name, value, type } = e.target;
-    
+
     if (type === "checkbox") {
       const checked = (e.target as HTMLInputElement).checked;
-      set_datos_formulario(prev => ({
+      set_datos_formulario((prev) => ({
         ...prev,
         [name]: checked,
         // Limpiar familiares y comentarios si hospedaje se desmarca
-        ...(name === "requiere_hospedaje" && !checked ? { 
-          viaja_con_esposa: false, 
-          viaja_con_hijos: false, 
-          viaja_con_otro_familiar: false,
-          esposa: undefined,
-          hijos: [], 
-          otros_familiares: [],
-          comentarios_hospedaje: "" 
-        } : {}),
+        ...(name === "requiere_hospedaje" && !checked
+          ? {
+              viaja_con_esposa: false,
+              viaja_con_hijos: false,
+              viaja_con_otro_familiar: false,
+              esposa: undefined,
+              hijos: [],
+              otros_familiares: [],
+              comentarios_hospedaje: "",
+            }
+          : {}),
         // Limpiar familiares específicos cuando se desmarca
-        ...(name === "viaja_con_esposa" && !checked ? { esposa: undefined } : {}),
+        ...(name === "viaja_con_esposa" && !checked
+          ? { esposa: undefined }
+          : {}),
         ...(name === "viaja_con_hijos" && !checked ? { hijos: [] } : {}),
-        ...(name === "viaja_con_otro_familiar" && !checked ? { otros_familiares: [] } : {})
+        ...(name === "viaja_con_otro_familiar" && !checked
+          ? { otros_familiares: [] }
+          : {}),
       }));
     } else {
-      set_datos_formulario(prev => ({ ...prev, [name]: value }));
+      set_datos_formulario((prev) => ({ ...prev, [name]: value }));
     }
   };
 
   const manejar_cambio_servicios = (servicio: string) => {
-    set_datos_formulario(prev => ({
+    set_datos_formulario((prev) => ({
       ...prev,
       servicios: prev.servicios.includes(servicio)
-        ? prev.servicios.filter(s => s !== servicio)
-        : [...prev.servicios, servicio]
+        ? prev.servicios.filter((s) => s !== servicio)
+        : [...prev.servicios, servicio],
     }));
   };
 
@@ -146,129 +160,171 @@ export default function FormularioInscripcion({
   };
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-900">
-      <div className="container mx-auto px-4 py-12">
-        {/* Header */}
-        <div className="mb-8">
-          <button
-            onClick={on_volver}
-            className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 mb-4"
-          >
-            ← Verificar otro documento
-          </button>
-          <h1 className="text-4xl font-bold text-zinc-900 dark:text-zinc-100 mb-4">
-            Pre-inscripción
-          </h1>
-          <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800 mb-4">
-            <p className="text-lg font-semibold text-blue-800 dark:text-blue-200">
-              Evento: {evento_titulo}
-            </p>
+    <div className="relative w-full min-h-screen overflow-hidden">
+      {/* Background Image */}
+      <Image
+        src="/backgrounds/Fundo 1.png"
+        alt="Background"
+        fill
+        className="object-cover"
+        priority
+        quality={100}
+      />
+
+      {/* Overlay for better text readability */}
+      <div className="absolute inset-0 bg-black/40" />
+
+      {/* Content Container */}
+      <div className="relative min-h-screen flex flex-col px-4 sm:px-6 lg:px-8 py-8">
+        {/* Logo */}
+        <div className="mb-8 w-full flex justify-center">
+          <div className="relative w-24 h-24 sm:w-64 sm:h-64">
+            <Image
+              src="/logos/Espanhol Branco@2x.png"
+              alt="Agenda Positiva"
+              fill
+              className="object-contain"
+              priority
+            />
           </div>
-          <p className="text-lg text-zinc-600 dark:text-zinc-400">
-            Completa este formulario para registrarte previamente al evento
-          </p>
-          <p className="text-sm text-zinc-500 dark:text-zinc-500 mt-2">
-            Documento: {datos_formulario.numero_documento}
-          </p>
-          
-          {/* Notificación de datos prellenados */}
-          {datos_prellenados && (
-            <div className="mt-4 bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
-              <div className="flex items-center gap-2">
-                <div className="text-green-600 dark:text-green-400 text-lg">✓</div>
-                <div>
-                  <p className="text-sm font-medium text-green-800 dark:text-green-200">
-                    Datos encontrados en el sistema
-                  </p>
-                  <p className="text-sm text-green-600 dark:text-green-400">
-                    Hemos prellenado tu información con datos de registros anteriores. 
-                    Revisa y actualiza los datos si es necesario.
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
 
-        {/* Form */}
-        <div className="bg-white dark:bg-zinc-800 rounded-lg border-2 border-zinc-200 dark:border-zinc-700 p-8">
-          <form onSubmit={manejar_envio} className="space-y-8">
-            {/* Información Personal */}
-            <InformacionPersonal
-              datos={extraerDatosPersonales(datos_formulario)}
-              onChange={(campo, valor) => {
-                set_datos_formulario(prev => ({ ...prev, [campo]: valor }));
-              }}
-              mostrarEmail={true}
-              titulo="Información Personal"
-              subtitulo="Complete sus datos personales"
-            />
+        <div className="flex-1 flex items-center justify-center">
+          <div className="container mx-auto px-4">
+            {/* Header */}
+            <div className="mb-8">
+              <button
+                onClick={on_volver}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white hover:text-white font-medium rounded-lg transition-all duration-200 border border-white/20 hover:border-white/40 mb-4 group"
+              >
+                <ArrowLeftIcon className="w-5 h-5 transition-transform group-hover:-translate-x-1" />
+                Verificar otro documento
+              </button>
+              <h1 className="text-4xl font-bold text-white mb-4">
+                Pre-inscripción
+              </h1>
+              <p className="text-lg text-white">
+                Completa este formulario para registrarte previamente al evento
+              </p>
+              <p className="text-sm text-white mt-2">
+                Documento: {datos_formulario.numero_documento}
+              </p>
 
-            {/* Información de Hospedaje */}
-            <div>
-              <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-6">
-                Información de Hospedaje
-              </h3>
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  id="requiere_hospedaje"
-                  name="requiere_hospedaje"
-                  checked={datos_formulario.requiere_hospedaje}
-                  onChange={handle_input_change}
-                  className="h-4 w-4 text-blue-600 bg-zinc-100 border-zinc-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-zinc-800 focus:ring-2 dark:bg-zinc-700 dark:border-zinc-600"
-                />
-                <label htmlFor="requiere_hospedaje" className="ml-2 text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                  Requiere hospedaje
-                </label>
-              </div>
+              {/* Notificación de datos prellenados */}
+              {datos_prellenados && (
+                <div className="mt-4 bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
+                  <div className="flex items-center gap-2">
+                    <div className="text-green-600 dark:text-green-400 text-lg font-bold">
+                      ✓
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-green-800 dark:text-green-200">
+                        Datos encontrados en el sistema
+                      </p>
+                      <p className="text-sm text-green-600 dark:text-green-400">
+                        Hemos prellenado tu información con datos de registros
+                        anteriores. Revisa y actualiza los datos si es
+                        necesario.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
-            {/* Sección de Familiares - Solo si requiere hospedaje */}
-            {datos_formulario.requiere_hospedaje && (
-              <GrupoAsistencia
-                datos_formulario={datos_formulario}
-                set_datos_formulario={set_datos_formulario}
-                handle_input_change={handle_input_change}
-              />
-            )}
+            {/* Form */}
+            <div className="bg-white dark:bg-zinc-800 rounded-lg border-2 border-zinc-200 dark:border-zinc-700 p-8">
+              <form onSubmit={manejar_envio} className="space-y-8">
+                {/* Información Personal */}
+                <InformacionPersonal
+                  datos={extraerDatosPersonales(datos_formulario)}
+                  onChange={(campo, valor) => {
+                    set_datos_formulario((prev) => ({
+                      ...prev,
+                      [campo]: valor,
+                    }));
+                  }}
+                  mostrarEmail={true}
+                  titulo="Información Personal"
+                  subtitulo="Complete sus datos personales"
+                />
 
-            {/* Servicios */}
-            <div>
-              <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-6">
-                ¿Actualmente en la iglesia está participando de alguno de estos servicios?
-              </h3>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                {servicios_disponibles.map(servicio => (
-                  <div key={servicio.value} className="flex items-center">
+                {/* Información de Hospedaje */}
+                <div>
+                  <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-6">
+                    Información de Hospedaje
+                  </h3>
+                  <div className="flex items-center">
                     <input
                       type="checkbox"
-                      id={`servicio-${servicio.value}`}
-                      checked={datos_formulario.servicios.includes(servicio.value)}
-                      onChange={() => manejar_cambio_servicios(servicio.value)}
+                      id="requiere_hospedaje"
+                      name="requiere_hospedaje"
+                      checked={datos_formulario.requiere_hospedaje}
+                      onChange={handle_input_change}
                       className="h-4 w-4 text-blue-600 bg-zinc-100 border-zinc-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-zinc-800 focus:ring-2 dark:bg-zinc-700 dark:border-zinc-600"
                     />
-                    <label htmlFor={`servicio-${servicio.value}`} className="ml-2 text-sm text-zinc-700 dark:text-zinc-300">
-                      {servicio.label}
+                    <label
+                      htmlFor="requiere_hospedaje"
+                      className="ml-2 text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                    >
+                      Requiere hospedaje
                     </label>
                   </div>
-                ))}
-              </div>
+                </div>
+
+                {/* Sección de Familiares - Solo si requiere hospedaje */}
+                {datos_formulario.requiere_hospedaje && (
+                  <GrupoAsistencia
+                    datos_formulario={datos_formulario}
+                    set_datos_formulario={set_datos_formulario}
+                    handle_input_change={handle_input_change}
+                  />
+                )}
+
+                {/* Servicios */}
+                <div>
+                  <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-6">
+                    ¿Actualmente en la iglesia está participando de alguno de
+                    estos servicios?
+                  </h3>
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                    {servicios_disponibles.map((servicio) => (
+                      <div key={servicio.value} className="flex items-center">
+                        <input
+                          type="checkbox"
+                          id={`servicio-${servicio.value}`}
+                          checked={datos_formulario.servicios.includes(
+                            servicio.value,
+                          )}
+                          onChange={() =>
+                            manejar_cambio_servicios(servicio.value)
+                          }
+                          className="h-4 w-4 text-blue-600 bg-zinc-100 border-zinc-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-zinc-800 focus:ring-2 dark:bg-zinc-700 dark:border-zinc-600"
+                        />
+                        <label
+                          htmlFor={`servicio-${servicio.value}`}
+                          className="ml-2 text-sm text-zinc-700 dark:text-zinc-300"
+                        >
+                          {servicio.label}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Botón de Envío */}
+                <div className="p-6 bg-zinc-50 dark:bg-zinc-700/50 rounded-lg">
+                  <button
+                    type="submit"
+                    disabled={esta_enviando}
+                    className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium py-3 px-6 rounded-lg transition-colors focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed"
+                  >
+                    {esta_enviando ? "Enviando..." : "Enviar Pre-inscripción"}
+                  </button>
+                </div>
+              </form>
             </div>
-
-
-
-            {/* Botón de Envío */}
-            <div className="p-6 bg-zinc-50 dark:bg-zinc-700/50 rounded-lg">
-              <button
-                type="submit"
-                disabled={esta_enviando}
-                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium py-3 px-6 rounded-lg transition-colors focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed"
-              >
-                {esta_enviando ? "Enviando..." : "Enviar Pre-inscripción"}
-              </button>
-            </div>
-          </form>
+          </div>
         </div>
       </div>
     </div>

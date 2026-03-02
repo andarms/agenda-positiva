@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useParams } from "next/navigation";
+import Image from "next/image";
 
 interface VerificarDocumentoProps {
   onDocumentoVerificado: (
@@ -101,89 +102,108 @@ export default function VerificarDocumento({
   };
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-900">
-      <div className="container mx-auto px-4 py-12">
-        <div className="max-w-md mx-auto">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-zinc-900 dark:text-zinc-100 mb-4">
-              Pre-inscripción
-            </h1>
-            <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800 mb-4">
-              <h2 className="text-lg font-semibold text-blue-800 dark:text-blue-200 mb-2">
-                Evento: {evento_titulo}
-              </h2>
-              {evento_fecha && (
-                <p className="text-sm text-blue-600 dark:text-blue-300">
-                  Fecha: {evento_fecha}
-                </p>
-              )}
-            </div>
-            <p className="text-lg text-zinc-600 dark:text-zinc-400">
-              Registro para el evento de Conferencias
-            </p>
+    <div className="relative w-full min-h-screen overflow-hidden">
+      {/* Background Image */}
+      <Image
+        src="/backgrounds/Fundo 1.png"
+        alt="Background"
+        fill
+        className="object-cover"
+        priority
+        quality={100}
+      />
+
+      {/* Overlay for better text readability */}
+      <div className="absolute inset-0 bg-black/40" />
+
+      {/* Content Container */}
+      <div className="relative min-h-screen flex flex-col px-4 sm:px-6 lg:px-8 py-8">
+        {/* Logo */}
+        <div className="mb-8 w-full flex justify-center">
+          <div className="relative w-24 h-24 sm:w-64 sm:h-64">
+            <Image
+              src="/logos/Espanhol Branco@2x.png"
+              alt="Agenda Positiva"
+              fill
+              className="object-contain"
+              priority
+            />
           </div>
+        </div>
 
-          <div className="bg-white dark:bg-zinc-800 rounded-lg border-2 border-zinc-200 dark:border-zinc-700 p-8">
-            <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100 mb-6">
-              Verificar Documento
-            </h2>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-6">
-              Ingrese su tipo y número de documento para verificar si ya está
-              registrado
-            </p>
+        {/* Form Container */}
+        <div className="flex-1 flex items-center justify-center">
+          <div className="w-full max-w-md">
+            <div className="text-center mb-8">
+              <h1 className="text-4xl text-white font-bold mb-4">
+                Pre-inscripción
+              </h1>
+            </div>
 
-            <div className="space-y-4">
-              <div>
-                <label
-                  htmlFor="tipo_documento"
-                  className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2"
+            <div className="bg-white dark:bg-zinc-800 rounded-lg border-2 border-zinc-200 dark:border-zinc-700 p-8">
+              <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100 mb-6">
+                Verificar Documento
+              </h2>
+              <p className="text-sm text-zinc-600 mb-6">
+                Ingrese su tipo y número de documento para verificar si ya está
+                registrado
+              </p>
+
+              <div className="space-y-4">
+                <div>
+                  <label
+                    htmlFor="tipo_documento"
+                    className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2"
+                  >
+                    Tipo de Documento *
+                  </label>
+                  <select
+                    id="tipo_documento"
+                    value={tipo_documento}
+                    onChange={(e) => setTipoDocumento(e.target.value)}
+                    className="w-full px-3 py-2 border-2 border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    disabled={verificando}
+                  >
+                    {tipos_documento.map((tipo) => (
+                      <option key={tipo.value} value={tipo.value}>
+                        {tipo.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="numero_documento"
+                    className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2"
+                  >
+                    Número de Documento *
+                  </label>
+                  <input
+                    type="tel"
+                    id="numero_documento"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    value={numero_documento}
+                    onChange={manejar_cambio_numero_documento}
+                    placeholder="Ingrese su número de documento"
+                    className="w-full px-3 py-2 border-2 border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    disabled={verificando}
+                  />
+                </div>
+
+                <button
+                  onClick={manejar_verificacion}
+                  disabled={
+                    verificando ||
+                    !tipo_documento ||
+                    numero_documento.length < 6
+                  }
+                  className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium py-3 px-6 rounded-lg transition-colors focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed"
                 >
-                  Tipo de Documento *
-                </label>
-                <select
-                  id="tipo_documento"
-                  value={tipo_documento}
-                  onChange={(e) => setTipoDocumento(e.target.value)}
-                  className="w-full px-3 py-2 border-2 border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  disabled={verificando}
-                >
-                  {tipos_documento.map((tipo) => (
-                    <option key={tipo.value} value={tipo.value}>
-                      {tipo.label}
-                    </option>
-                  ))}
-                </select>
+                  {verificando ? "Verificando..." : "Verificar"}
+                </button>
               </div>
-
-              <div>
-                <label
-                  htmlFor="numero_documento"
-                  className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2"
-                >
-                  Número de Documento *
-                </label>
-                <input
-                  type="tel"
-                  id="numero_documento"
-                  inputMode="numeric"
-                  pattern="[0-9]*"
-                  value={numero_documento}
-                  onChange={manejar_cambio_numero_documento}
-                  placeholder="Ingrese su número de documento"
-                  className="w-full px-3 py-2 border-2 border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  disabled={verificando}
-                />
-              </div>
-
-              <button
-                onClick={manejar_verificacion}
-                disabled={
-                  verificando || !tipo_documento || numero_documento.length < 6
-                }
-                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium py-3 px-6 rounded-lg transition-colors focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed"
-              >
-                {verificando ? "Verificando..." : "Verificar"}
-              </button>
             </div>
           </div>
         </div>
