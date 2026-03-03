@@ -100,10 +100,18 @@ export async function POST(
     });
 
     // 6. Procesar familiares si requiere hospedaje
-    if (datos.requiere_hospedaje && datos.familiares && datos.familiares.length > 0) {
+    if (
+      datos.requiere_hospedaje &&
+      datos.familiares &&
+      datos.familiares.length > 0
+    ) {
       // Inscribir familiares
       for (const familiar of datos.familiares) {
-        if (familiar.numero_documento && familiar.nombres && familiar.apellidos) {
+        if (
+          familiar.numero_documento &&
+          familiar.nombres &&
+          familiar.apellidos
+        ) {
           const persona_familiar = await crear_o_obtener_persona({
             nombres: familiar.nombres,
             apellidos: familiar.apellidos,
