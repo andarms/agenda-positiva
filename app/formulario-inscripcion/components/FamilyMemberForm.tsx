@@ -72,28 +72,6 @@ export default function FamilyMemberForm({
         )
       : opciones_parentesco;
 
-  const agregar_familiar = (persona: PersonaData) => {
-    const nuevo_familiar: FamiliarData = {
-      id: generateId(),
-      persona,
-      relacion:
-        allowedRelationships.length === 1 ? allowedRelationships[0] : "",
-    };
-
-    const nuevos_familiares = [...familiares, nuevo_familiar];
-    setFamiliares(nuevos_familiares);
-    onFamilyMembersChange(nuevos_familiares);
-    setMostrarFormulario(false);
-  };
-
-  const actualizar_relacion = (id: string, relacion: string) => {
-    const familiares_actualizados = familiares.map((familiar) =>
-      familiar.id === id ? { ...familiar, relacion } : familiar,
-    );
-    setFamiliares(familiares_actualizados);
-    onFamilyMembersChange(familiares_actualizados);
-  };
-
   const remover_familiar = (id: string) => {
     const familiares_filtrados = familiares.filter(
       (familiar) => familiar.id !== id,
@@ -143,24 +121,10 @@ export default function FamilyMemberForm({
                       {familiar.persona.tipo_identificacion}:{" "}
                       {familiar.persona.numero_identificacion}
                     </p>
-                  </div>
-                  {/* Relationship selector */}
-
-                  <div className="min-w-[150px]">
-                    <select
-                      value={familiar.relacion}
-                      onChange={(e) =>
-                        actualizar_relacion(familiar.id, e.target.value)
-                      }
-                      className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
-                    >
-                      <option value="">Seleccionar relación</option>
-                      {opciones_filtradas.map((opcion) => (
-                        <option key={opcion.value} value={opcion.value}>
-                          {opcion.label}
-                        </option>
-                      ))}
-                    </select>
+                    <p className="text-xs text-gray-400 mt-1">
+                      {familiar.relacion.charAt(0).toUpperCase() +
+                        familiar.relacion.slice(1)}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -180,18 +144,38 @@ export default function FamilyMemberForm({
 
       {/* Add new family member form */}
       {mostrar_formulario && (
-        <div className="mt-4">
+        <div className="mt-4 ">
           <PersonSearchForm
             title={`Agregar ${relationshipLabel}`}
             placeholder={`Número de documento del ${relationshipLabel.toLowerCase()}`}
-            onPersonSelected={agregar_familiar}
+            showGenderField={true}
+            showRelationshipField={true}
+            onPersonSelected={(persona, parentesco) => {
+              if (!parentesco) {
+                alert("Por favor selecciona un parentesco");
+                return;
+              }
+
+              const nuevo_familiar: FamiliarData = {
+                id: generateId(),
+                persona,
+                relacion: parentesco,
+              };
+
+              const nuevos_familiares = [...familiares, nuevo_familiar];
+              setFamiliares(nuevos_familiares);
+              onFamilyMembersChange(nuevos_familiares);
+              setMostrarFormulario(false);
+            }}
             onPersonNotFound={() => {}}
           />
 
-          <div className="mt-3 flex justify-end">
+          <div className="mt-4 flex justify-end">
             <button
               type="button"
-              onClick={() => setMostrarFormulario(false)}
+              onClick={() => {
+                setMostrarFormulario(false);
+              }}
               className="px-4 py-2 text-gray-600 bg-gray-200 rounded-md hover:bg-gray-300"
             >
               Cancelar

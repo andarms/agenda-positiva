@@ -582,12 +582,20 @@ export default function FormularioInscripcionPage() {
                   <label className="block text-sm font-medium text-zinc-700  mb-2">
                     Necesidades Especiales
                   </label>
-                  <input
-                    type="text"
+                  <p className="text-sm text-zinc-500  mb-3">
+                    Si usted o sus acompañantes utilizan silla de ruedas, tienen
+                    movilidad reducida, se encuentran en recuperación médica,
+                    presentan alguna condición cognitiva o requieren algún apoyo
+                    adicional, por favor indíquelo aquí. Esta información nos
+                    ayudará a gestionar el hospedaje de la mejor manera posible
+                    y, cuando sea necesario, procurar que las personas que
+                    requieran apoyo puedan alojarse juntas. Las solicitudes se
+                    atenderán según disponibilidad.
+                  </p>
+                  <textarea
                     name="necesidades_especiales"
                     value={datos_formulario.necesidades_especiales}
                     onChange={handleInputChange}
-                    placeholder="Ej: silla de ruedas, alergias alimentarias, medicamentos especiales, etc."
                     className="w-full px-3 py-2 border-2 border-zinc-300  rounded-lg bg-white  text-zinc-900  focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
@@ -616,15 +624,8 @@ export default function FormularioInscripcionPage() {
                 {/* Secciones de hospedaje con acompañantes */}
                 {datos_formulario.requiere_hospedaje && (
                   <div className="mt-6 space-y-6">
-                    <h3 className="text-lg font-semibold text-gray-900">
-                      Información de Hospedaje con Acompañantes
-                    </h3>
-
                     {/* Preguntas sobre acompañantes */}
                     <div className="space-y-4">
-                      <h4 className="font-medium text-gray-900">
-                        ¿Con quién viajas?
-                      </h4>
                       <div className="space-y-6">
                         {/* Pareja */}
                         <div className="space-y-3">

@@ -16,10 +16,12 @@ interface PersonaData {
 }
 
 interface PersonSearchFormProps {
-  onPersonSelected: (persona: PersonaData) => void;
+  onPersonSelected: (persona: PersonaData, parentesco?: string) => void;
   onPersonNotFound: () => void;
   title: string;
   placeholder?: string;
+  showRelationshipField?: boolean;
+  showGenderField?: boolean;
 }
 
 const tipos_documento = [
@@ -34,6 +36,27 @@ const opciones_sexo = [
   { value: "", label: "Seleccionar género" },
   { value: "masculino", label: "Masculino" },
   { value: "femenino", label: "Femenino" },
+];
+
+const opciones_parentesco = [
+  { value: "", label: "Seleccionar parentesco" },
+  { value: "esposo", label: "Esposo" },
+  { value: "esposa", label: "Esposa" },
+  { value: "hijo", label: "Hijo" },
+  { value: "hija", label: "Hija" },
+  { value: "padre", label: "Padre" },
+  { value: "madre", label: "Madre" },
+  { value: "hermano", label: "Hermano" },
+  { value: "hermana", label: "Hermana" },
+  { value: "abuelo", label: "Abuelo" },
+  { value: "abuela", label: "Abuela" },
+  { value: "tio", label: "Tío" },
+  { value: "tia", label: "Tía" },
+  { value: "primo", label: "Primo" },
+  { value: "prima", label: "Prima" },
+  { value: "sobrino", label: "Sobrino" },
+  { value: "sobrina", label: "Sobrina" },
+  { value: "otro", label: "Otro" },
 ];
 
 const persona_vacia: PersonaData = {
@@ -53,9 +76,13 @@ export default function PersonSearchForm({
   onPersonNotFound,
   title,
   placeholder = "Buscar por número de documento",
+  showRelationshipField = false,
+  showGenderField = false,
 }: PersonSearchFormProps) {
   const [tipo_documento, setTipoDocumento] = useState("");
   const [numero_documento, setNumeroDocumento] = useState("");
+  const [parentesco_seleccionado, setParentescoSeleccionado] = useState("");
+  const [genero_seleccionado, setGeneroSeleccionado] = useState("");
   const [esta_buscando, setEstaBuscando] = useState(false);
   const [persona_encontrada, setPersonaEncontrada] =
     useState<PersonaData | null>(null);
@@ -123,7 +150,9 @@ export default function PersonSearchForm({
   };
 
   const manejar_cambio_input = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >,
   ) => {
     const { name, value } = e.target;
     setFormaPersona((prev) => ({ ...prev, [name]: value }));
@@ -139,13 +168,30 @@ export default function PersonSearchForm({
       return;
     }
 
-    onPersonSelected(forma_persona);
+    if (showGenderField && !genero_seleccionado) {
+      setError("Por favor selecciona un género");
+      return;
+    }
+
+    if (showRelationshipField && !parentesco_seleccionado) {
+      setError("Por favor selecciona un parentesco");
+      return;
+    }
+
+    const persona_con_genero = {
+      ...forma_persona,
+      sexo: genero_seleccionado || forma_persona.sexo,
+    };
+
+    onPersonSelected(persona_con_genero, parentesco_seleccionado);
     resetear_formulario();
   };
 
   const resetear_formulario = () => {
     setTipoDocumento("");
     setNumeroDocumento("");
+    setParentescoSeleccionado("");
+    setGeneroSeleccionado("");
     setPersonaEncontrada(null);
     setMostrarFormularioCompleto(false);
     setFormaPersona({
@@ -219,7 +265,7 @@ export default function PersonSearchForm({
           {persona_encontrada && (
             <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-md">
               <p className="text-green-800 font-medium">
-                ✓ Persona encontrada en el sistema
+                Persona encontrada en el sistema
               </p>
             </div>
           )}
@@ -235,7 +281,7 @@ export default function PersonSearchForm({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Nombres *
+                Nombres <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -246,10 +292,9 @@ export default function PersonSearchForm({
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
-
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Apellidos *
+                Apellidos <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -260,10 +305,9 @@ export default function PersonSearchForm({
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
-
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Fecha de Nacimiento *
+                Fecha de Nacimiento <span className="text-red-500">*</span>
               </label>
               <input
                 type="date"
@@ -274,10 +318,9 @@ export default function PersonSearchForm({
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
-
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Teléfono
+                Celular / Teléfono
               </label>
               <input
                 type="tel"
@@ -288,22 +331,63 @@ export default function PersonSearchForm({
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
-
-            <div className="md:col-span-2">
+            <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Email
               </label>
               <input
                 type="email"
                 name="email"
-                disabled={!!persona_encontrada}
                 value={forma_persona.email}
                 onChange={manejar_cambio_input}
+                disabled={!!persona_encontrada}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
-
             <div className="md:col-span-2">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {showGenderField && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Género <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      value={genero_seleccionado}
+                      onChange={(e) => setGeneroSeleccionado(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      {opciones_sexo.map((opcion) => (
+                        <option key={opcion.value} value={opcion.value}>
+                          {opcion.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+
+                {showRelationshipField && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Parentesco <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      value={parentesco_seleccionado}
+                      onChange={(e) =>
+                        setParentescoSeleccionado(e.target.value)
+                      }
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      {opciones_parentesco.map((opcion) => (
+                        <option key={opcion.value} value={opcion.value}>
+                          {opcion.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="md:col-span-2 border-t border-gray-200 pt-4">
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Necesidades Especiales
               </label>

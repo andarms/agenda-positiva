@@ -23,6 +23,14 @@ interface RegistroPreInscripcion {
   fecha_registro: string;
 }
 
+interface MiembroGrupo {
+  nombres: string;
+  apellidos: string;
+  cedula: string;
+  relacion_con_lider: string | null;
+  requiere_hospedaje: boolean;
+}
+
 interface DatosEvento {
   titulo: string;
   fecha_inicio?: string;
@@ -38,6 +46,7 @@ export default function RegistroExistentePage() {
   const [datos_evento, setDatosEvento] = useState<DatosEvento | null>(null);
   const [registro_existente, setRegistroExistente] =
     useState<RegistroPreInscripcion | null>(null);
+  const [miembros_grupo, setMiembrosGrupo] = useState<MiembroGrupo[]>([]);
   const [cargando, setCargando] = useState(true);
 
   const tipo_documento = searchParams.get("tipo_documento") || "";
@@ -108,6 +117,14 @@ export default function RegistroExistentePage() {
               new Date().toISOString().split("T")[0],
           };
           setRegistroExistente(registro);
+
+          // Store group members (familiares)
+          if (
+            data.otros_miembros_grupo &&
+            data.otros_miembros_grupo.length > 0
+          ) {
+            setMiembrosGrupo(data.otros_miembros_grupo);
+          }
         } else {
           // Not registered, redirect to verification
           router.push(`/verificar`);
@@ -195,30 +212,12 @@ export default function RegistroExistentePage() {
         </div>
 
         <div className="flex-1 flex items-center justify-center">
-          <div className="bg-white dark:bg-zinc-800 rounded-lg border-2 border-zinc-200 dark:border-zinc-700 p-8 w-full max-w-4xl">
+          <div className="bg-white dark:bg-zinc-800 rounded-lg border-2 border-zinc-200  p-8 w-full max-w-4xl">
             {/* Header */}
             <div className="text-center mb-8">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg
-                  className="w-8 h-8 text-green-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                  ></path>
-                </svg>
-              </div>
               <h1 className="text-3xl font-bold text-zinc-900 dark:text-zinc-100 mb-2">
                 ¡Ya estás registrado!
               </h1>
-              <p className="text-zinc-600 dark:text-zinc-400">
-                {datos_evento?.titulo}
-              </p>
             </div>
 
             {/* Registration Details */}
@@ -316,49 +315,7 @@ export default function RegistroExistentePage() {
 
               {/* Event Preferences */}
               <div>
-                <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-4 flex items-center">
-                  <svg
-                    className="w-5 h-5 mr-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                    ></path>
-                  </svg>
-                  Preferencias del Evento
-                </h3>
                 <div className="space-y-3 p-4 bg-zinc-50 dark:bg-zinc-700 rounded-lg">
-                  <div className="flex items-center">
-                    <div
-                      className={`w-4 h-4 rounded mr-3 flex items-center justify-center ${
-                        registro_existente.participa_primer_evento
-                          ? "bg-green-500"
-                          : "bg-gray-300"
-                      }`}
-                    >
-                      {registro_existente.participa_primer_evento && (
-                        <svg
-                          className="w-3 h-3 text-white"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                            clipRule="evenodd"
-                          ></path>
-                        </svg>
-                      )}
-                    </div>
-                    <span className="text-zinc-900 dark:text-zinc-100">
-                      Primera vez en este tipo de evento
-                    </span>
-                  </div>
                   <div className="flex items-center">
                     <div
                       className={`w-4 h-4 rounded mr-3 flex items-center justify-center ${
@@ -385,32 +342,6 @@ export default function RegistroExistentePage() {
                       Requiere hospedaje
                     </span>
                   </div>
-                  <div className="flex items-center">
-                    <div
-                      className={`w-4 h-4 rounded mr-3 flex items-center justify-center ${
-                        registro_existente.esta_sirviendo
-                          ? "bg-green-500"
-                          : "bg-gray-300"
-                      }`}
-                    >
-                      {registro_existente.esta_sirviendo && (
-                        <svg
-                          className="w-3 h-3 text-white"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                            clipRule="evenodd"
-                          ></path>
-                        </svg>
-                      )}
-                    </div>
-                    <span className="text-zinc-900 dark:text-zinc-100">
-                      Dispuesto(a) a servir
-                    </span>
-                  </div>
 
                   {registro_existente.servicios &&
                     registro_existente.servicios.length > 0 && (
@@ -435,44 +366,188 @@ export default function RegistroExistentePage() {
                 </div>
               </div>
 
-              {/* Registration Date */}
-              <div>
-                <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-4 flex items-center">
-                  <svg
-                    className="w-5 h-5 mr-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                    ></path>
-                  </svg>
-                  Fecha de Registro
-                </h3>
-                <div className="p-4 bg-zinc-50 dark:bg-zinc-700 rounded-lg">
-                  <p className="text-zinc-900 dark:text-zinc-100">
-                    {new Date(
-                      registro_existente.fecha_registro,
-                    ).toLocaleDateString("es-CO", {
-                      weekday: "long",
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
+              {/* Family Members / Group */}
+              {registro_existente.requiere_hospedaje &&
+                miembros_grupo.length > 0 && (
+                  <div>
+                    <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-4 flex items-center">
+                      <svg
+                        className="w-5 h-5 mr-2"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                        />
+                      </svg>
+                      Grupo Familiar
+                    </h3>
+                    <div className="space-y-3 p-4 bg-zinc-50 dark:bg-zinc-700 rounded-lg">
+                      {miembros_grupo.map((miembro, index) => (
+                        <div
+                          key={index}
+                          className="flex items-center justify-between rounded-md border border-zinc-200 bg-white p-3"
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-100 text-blue-700">
+                              <svg
+                                className="h-5 w-5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                                />
+                              </svg>
+                            </div>
+                            <div>
+                              <p className="font-medium text-zinc-900">
+                                {miembro.nombres} {miembro.apellidos}
+                              </p>
+                              <p className="text-xs text-zinc-500">
+                                {miembro.relacion_con_lider
+                                  ? miembro.relacion_con_lider
+                                      .charAt(0)
+                                      .toUpperCase() +
+                                    miembro.relacion_con_lider.slice(1)
+                                  : "Familiar"}
+                                {" · "}
+                                {miembro.cedula}
+                              </p>
+                            </div>
+                          </div>
+                          <span
+                            className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium ${
+                              miembro.requiere_hospedaje
+                                ? "bg-green-100 text-green-800"
+                                : "bg-zinc-100 text-zinc-600"
+                            }`}
+                          >
+                            {miembro.requiere_hospedaje ? (
+                              <svg
+                                className="h-3.5 w-3.5"
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                              >
+                                <path
+                                  fillRule="evenodd"
+                                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                            ) : (
+                              <svg
+                                className="h-3.5 w-3.5"
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                              >
+                                <path
+                                  fillRule="evenodd"
+                                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                            )}
+                            {miembro.requiere_hospedaje
+                              ? "Requiere hospedaje"
+                              : "Sin hospedaje"}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+            </div>
+
+            {/* Payment Notice */}
+            <div className="mt-8  border-l-4 border-amber-500 bg-amber-50 p-5">
+              <div className="flex items-start gap-3">
+                <svg
+                  className="mt-0.5 h-6 w-6 flex-shrink-0 text-amber-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <div>
+                  <h4 className="text-base font-bold text-amber-800">
+                    ¡Importante!
+                  </h4>
+                  <p className="mt-1 text-sm text-amber-700">
+                    No estarás completamente inscrito hasta que pagues la
+                    totalidad de la cuota de participación. Comunícate con el
+                    hermano responsable de tu localidad para gestionar los
+                    pagos.
                   </p>
+                  <div className="mt-4">
+                    <p className="text-sm font-semibold text-amber-800 mb-2">
+                      Fechas límite de pago:
+                    </p>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                      <div className="flex items-center gap-2 rounded-md border border-amber-300 bg-amber-100 px-3 py-2">
+                        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-amber-500 text-xs font-bold text-white">
+                          1
+                        </span>
+                        <div>
+                          <p className="text-xs font-medium text-amber-600">
+                            Primera cuota
+                          </p>
+                          <p className="text-sm font-bold text-amber-900">
+                            17 de abril
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 rounded-md border border-amber-300 bg-amber-100 px-3 py-2">
+                        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-amber-500 text-xs font-bold text-white">
+                          2
+                        </span>
+                        <div>
+                          <p className="text-xs font-medium text-amber-600">
+                            Segunda cuota
+                          </p>
+                          <p className="text-sm font-bold text-amber-900">
+                            19 de mayo
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 rounded-md border border-amber-300 bg-amber-100 px-3 py-2">
+                        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-amber-500 text-xs font-bold text-white">
+                          3
+                        </span>
+                        <div>
+                          <p className="text-xs font-medium text-amber-600">
+                            Tercera cuota
+                          </p>
+                          <p className="text-sm font-bold text-amber-900">
+                            17 de junio
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* Action Buttons */}
-            <div className="flex justify-between pt-8 border-t border-zinc-200 dark:border-zinc-700 mt-8">
+            <div className="flex justify-between pt-8 border-t border-zinc-200  mt-8">
               <button
                 onClick={manejar_volver}
-                className="px-6 py-3 border border-zinc-300 dark:border-zinc-600 rounded-lg text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-colors"
+                className="px-6 py-3 border border-zinc-300  rounded-lg text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-colors"
               >
                 Volver
               </button>
