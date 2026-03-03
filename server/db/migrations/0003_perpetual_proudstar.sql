@@ -1,0 +1,1 @@
+ALTER TABLE `eventos` ADD `activo` integer DEFAULT 0 NOT NULL;

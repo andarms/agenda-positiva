@@ -38,11 +38,11 @@ export default function HomePage() {
         {/* CTA Button */}
         <div className="w-full max-w-sm px-4">
           <Link
-            href="/eventos/conferencia-internacional-2026/inscripciones"
+            href="/verificar"
             className="block w-full py-4 px-6 hover:opacity-90 text-white text-center font-bold text-lg sm:text-xl rounded-lg transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
             style={{ backgroundColor: "var(--button-primary)" }}
           >
-            Realiza tu pre-preinscripción
+            Pre-Inscripción
           </Link>
         </div>
       </div>

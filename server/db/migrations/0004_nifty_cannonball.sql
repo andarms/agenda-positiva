@@ -1,0 +1,1 @@
+ALTER TABLE `inscripciones` ADD `localidad` text NOT NULL;

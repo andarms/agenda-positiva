@@ -78,6 +78,37 @@ export const $verification_tokens = sqliteTable(
 );
 
 // ============================================================================
+// Business Constants and Enums
+// ============================================================================
+export const opciones_parentesco = [
+  { value: "esposa", label: "Esposa" },
+  { value: "esposo", label: "Esposo" },
+  { value: "hijo", label: "Hijo" },
+  { value: "hija", label: "Hija" },
+  { value: "padre", label: "Padre" },
+  { value: "madre", label: "Madre" },
+  { value: "hermano", label: "Hermano" },
+  { value: "hermana", label: "Hermana" },
+  { value: "abuelo", label: "Abuelo" },
+  { value: "abuela", label: "Abuela" },
+  { value: "nieto", label: "Nieto" },
+  { value: "nieta", label: "Nieta" },
+  { value: "tio", label: "Tío" },
+  { value: "tia", label: "Tía" },
+  { value: "sobrino", label: "Sobrino" },
+  { value: "sobrina", label: "Sobrina" },
+  { value: "primo", label: "Primo" },
+  { value: "prima", label: "Prima" },
+  { value: "cuñado", label: "Cuñado" },
+  { value: "cuñada", label: "Cuñada" },
+  { value: "suegro", label: "Suegro" },
+  { value: "suegra", label: "Suegra" },
+  { value: "yerno", label: "Yerno" },
+  { value: "nuera", label: "Nuera" },
+  { value: "otro", label: "Otro" },
+] as const;
+
+// ============================================================================
 // Business Tables
 // ============================================================================
 export const $personas = sqliteTable("personas", {
@@ -116,6 +147,7 @@ export const $eventos = sqliteTable("eventos", {
   fecha_inicio: text("fecha_inicio").notNull(), // Usando text para almacenamiento de fechas en SQLite
   fecha_fin: text("fecha_fin").notNull(), // Usando text para almacenamiento de fechas en SQLite
   ubicacion: text("ubicacion").notNull(),
+  activo: integer("activo").notNull().default(0), // 0 for inactive, 1 for active - only one can be active at a time
   fecha_creacion: text("fecha_creacion")
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
@@ -139,6 +171,7 @@ export const $inscripciones = sqliteTable("inscripciones", {
   relacion_con_lider: text("relacion_con_lider"), // ej: "esposa", "hijo", "amigo", etc.
   estado: text("estado").notNull().default("pendiente"), // pendiente, confirmado, cancelado, completado, no_asistio
   necesidades_especiales: text("necesidades_especiales"), // Ej: "requiere silla de ruedas", "alergia a alimentos", etc.
+  localidad: text("localidad").notNull(), // Localidad (ciudad/municipio) de procedencia de la persona
   fecha_creacion: text("fecha_creacion")
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),

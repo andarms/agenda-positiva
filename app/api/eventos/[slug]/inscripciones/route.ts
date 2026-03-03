@@ -1,12 +1,33 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/server/db';
-import { $personas, $grupos_asistencia, $inscripciones, $eventos } from '@/server/db/schema';
-import { eq, and } from 'drizzle-orm';
-import { DatosFormulario } from '@/app/eventos/[slug]/inscripciones/components/FormularioInscripcion';
+import { NextRequest, NextResponse } from "next/server";
+import { db } from "@/server/db";
+import {
+  $personas,
+  $grupos_asistencia,
+  $inscripciones,
+  $eventos,
+} from "@/server/db/schema";
+import { eq, and } from "drizzle-orm";
+
+interface DatosFormulario {
+  nombres: string;
+  apellidos: string;
+  tipo_documento: string;
+  numero_documento: string;
+  sexo: string;
+  fecha_nacimiento: string;
+  celular: string;
+  email: string;
+  localidad: string;
+  participa_primer_evento: boolean;
+  requiere_hospedaje: boolean;
+  necesidades_especiales: string;
+  esta_sirviendo: boolean;
+  servicios: string[];
+}
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ slug: string }> }
+  { params }: { params: Promise<{ slug: string }> },
 ) {
   try {
     const datos: DatosFormulario = await request.json();
@@ -14,9 +35,16 @@ export async function POST(
     const slug_evento = resolved_params.slug;
 
     // 1. Obtener el evento
-    const evento = await db.select().from($eventos).where(eq($eventos.slug, slug_evento)).limit(1);
+    const evento = await db
+      .select()
+      .from($eventos)
+      .where(eq($eventos.slug, slug_evento))
+      .limit(1);
     if (evento.length === 0) {
-      return NextResponse.json({ error: 'Evento no encontrado' }, { status: 404 });
+      return NextResponse.json(
+        { error: "Evento no encontrado" },
+        { status: 404 },
+      );
     }
     const evento_id = evento[0].id;
 
@@ -51,8 +79,8 @@ export async function POST(
       evento_id: evento_id,
       requiere_hospedaje: datos.requiere_hospedaje ? 1 : 0,
       grupo_asistencia_id: grupo_id,
-      relacion_con_lider: 'lider',
-      estado: 'pendiente',
+      relacion_con_lider: "lider",
+      estado: "pendiente",
       necesidades_especiales: datos.comentarios_hospedaje || null,
     });
 
@@ -64,26 +92,26 @@ export async function POST(
       if (datos.esposa && datos.viaja_con_esposa) {
         familiares_a_inscribir.push({
           datos: datos.esposa,
-          relacion: 'esposa'
+          relacion: "esposa",
         });
       }
 
       // Procesar hijos
       if (datos.hijos && datos.viaja_con_hijos) {
-        datos.hijos.forEach(hijo => {
+        datos.hijos.forEach((hijo) => {
           familiares_a_inscribir.push({
             datos: hijo,
-            relacion: 'hijo'
+            relacion: "hijo",
           });
         });
       }
 
       // Procesar otros familiares
       if (datos.otros_familiares && datos.viaja_con_otro_familiar) {
-        datos.otros_familiares.forEach(familiar => {
+        datos.otros_familiares.forEach((familiar) => {
           familiares_a_inscribir.push({
             datos: familiar,
-            relacion: familiar.parentesco || 'familiar'
+            relacion: familiar.parentesco || "familiar",
           });
         });
       }
@@ -91,14 +119,14 @@ export async function POST(
       // Inscribir familiares
       for (const familiar_info of familiares_a_inscribir) {
         const familiar = familiar_info.datos;
-        
+
         if (familiar.cedula && familiar.nombres && familiar.apellidos) {
           const persona_familiar = await crear_o_obtener_persona({
             nombres: familiar.nombres,
             apellidos: familiar.apellidos,
             fecha_nacimiento: familiar.fecha_nacimiento,
             telefono: familiar.celular,
-            email: '', // Los familiares pueden no tener email
+            email: "", // Los familiares pueden no tener email
             tipo_identificacion: familiar.tipo_documento,
             numero_identificacion: familiar.cedula,
           });
@@ -109,23 +137,22 @@ export async function POST(
             requiere_hospedaje: 1, // Todos los familiares requieren hospedaje si llegaron hasta acá
             grupo_asistencia_id: grupo_id,
             relacion_con_lider: familiar_info.relacion,
-            estado: 'pendiente',
+            estado: "pendiente",
           });
         }
       }
     }
 
-    return NextResponse.json({ 
-      success: true, 
-      mensaje: 'Inscripción creada exitosamente',
-      grupo_id: grupo_id 
+    return NextResponse.json({
+      success: true,
+      mensaje: "Inscripción creada exitosamente",
+      grupo_id: grupo_id,
     });
-
   } catch (error) {
-    console.error('Error al crear inscripción:', error);
+    console.error("Error al crear inscripción:", error);
     return NextResponse.json(
-      { error: 'Error interno del servidor' },
-      { status: 500 }
+      { error: "Error interno del servidor" },
+      { status: 500 },
     );
   }
 }
@@ -143,7 +170,9 @@ async function crear_o_obtener_persona(datos_persona: {
   const persona_existente = await db
     .select()
     .from($personas)
-    .where(eq($personas.numero_identificacion, datos_persona.numero_identificacion))
+    .where(
+      eq($personas.numero_identificacion, datos_persona.numero_identificacion),
+    )
     .limit(1);
 
   if (persona_existente.length > 0) {
@@ -183,16 +212,23 @@ async function crear_o_obtener_persona(datos_persona: {
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ slug: string }> }
+  { params }: { params: Promise<{ slug: string }> },
 ) {
   try {
     const resolved_params = await params;
     const slug_evento = resolved_params.slug;
-    
+
     // Obtener el evento
-    const evento = await db.select().from($eventos).where(eq($eventos.slug, slug_evento)).limit(1);
+    const evento = await db
+      .select()
+      .from($eventos)
+      .where(eq($eventos.slug, slug_evento))
+      .limit(1);
     if (evento.length === 0) {
-      return NextResponse.json({ error: 'Evento no encontrado' }, { status: 404 });
+      return NextResponse.json(
+        { error: "Evento no encontrado" },
+        { status: 404 },
+      );
     }
 
     // Obtener inscripciones del evento con información de personas y grupos
@@ -213,12 +249,11 @@ export async function GET(
       .where(eq($inscripciones.evento_id, evento[0].id));
 
     return NextResponse.json({ inscripciones });
-
   } catch (error) {
-    console.error('Error al obtener inscripciones:', error);
+    console.error("Error al obtener inscripciones:", error);
     return NextResponse.json(
-      { error: 'Error interno del servidor' },
-      { status: 500 }
+      { error: "Error interno del servidor" },
+      { status: 500 },
     );
   }
 }

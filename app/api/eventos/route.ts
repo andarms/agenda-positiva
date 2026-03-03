@@ -16,6 +16,7 @@ export async function GET() {
         fecha_inicio: $eventos.fecha_inicio,
         fecha_fin: $eventos.fecha_fin,
         ubicacion: $eventos.ubicacion,
+        activo: $eventos.activo,
       })
       .from($eventos)
       .where(gte($eventos.fecha_fin, ahora.toISOString()))

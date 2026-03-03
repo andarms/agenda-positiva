@@ -22,6 +22,27 @@
       "when": 1772166047540,
       "tag": "0002_glorious_marvel_boy",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1772504848005,
+      "tag": "0003_perpetual_proudstar",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1772508592770,
+      "tag": "0004_nifty_cannonball",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1772508756344,
+      "tag": "0005_brief_thor_girl",
+      "breakpoints": true
     }
   ]
 }

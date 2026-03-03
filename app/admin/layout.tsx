@@ -14,7 +14,7 @@ export default function AdminLayout({
   return (
     <>
       <TopNavigation />
-      <main className="mb-16 md:mb-0">{children}</main>
+      <main className="mb-16 h-full md:mb-0">{children}</main>
       <MobileNavigation />
     </>
   );
