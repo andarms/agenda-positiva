@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 interface PersonaData {
@@ -13,6 +13,12 @@ interface PersonaData {
   email: string;
   sexo: string;
   necesidades_especiales: string;
+}
+
+interface DepartamentoData {
+  id: number;
+  departamento: string;
+  ciudades: string[];
 }
 
 interface PersonSearchFormProps {
@@ -83,6 +89,9 @@ export default function PersonSearchForm({
   const [numero_documento, setNumeroDocumento] = useState("");
   const [parentesco_seleccionado, setParentescoSeleccionado] = useState("");
   const [genero_seleccionado, setGeneroSeleccionado] = useState("");
+  const [departamento_seleccionado, setDepartamentoSeleccionado] = useState("");
+  const [municipio_seleccionado, setMunicipioSeleccionado] = useState("");
+  const [departamentos, setDepartamentos] = useState<DepartamentoData[]>([]);
   const [esta_buscando, setEstaBuscando] = useState(false);
   const [persona_encontrada, setPersonaEncontrada] =
     useState<PersonaData | null>(null);
@@ -94,6 +103,20 @@ export default function PersonSearchForm({
   const [forma_persona, setFormaPersona] = useState<PersonaData>({
     ...persona_vacia,
   });
+
+  // Load Colombia data on component mount
+  useEffect(() => {
+    const cargar_departamentos = async () => {
+      try {
+        const response = await fetch("/colombia.min.json");
+        const data = await response.json();
+        setDepartamentos(data);
+      } catch (error) {
+        console.error("Error cargando departamentos:", error);
+      }
+    };
+    cargar_departamentos();
+  }, []);
 
   const buscar_persona = async () => {
     if (!tipo_documento || !numero_documento) {
@@ -178,13 +201,37 @@ export default function PersonSearchForm({
       return;
     }
 
-    const persona_con_genero = {
+    if (!departamento_seleccionado || !municipio_seleccionado) {
+      setError("Por favor selecciona el departamento y municipio");
+      return;
+    }
+
+    const dept_obj = departamentos.find(
+      (d) => d.id.toString() === departamento_seleccionado,
+    );
+    const localidad = `${dept_obj?.departamento} / ${municipio_seleccionado}`;
+
+    const persona_con_datos = {
       ...forma_persona,
       sexo: genero_seleccionado || forma_persona.sexo,
     };
 
-    onPersonSelected(persona_con_genero, parentesco_seleccionado);
+    onPersonSelected(
+      {
+        ...persona_con_datos,
+        necesidades_especiales: `${persona_con_datos.necesidades_especiales}${persona_con_datos.necesidades_especiales ? " | " : ""}Localidad: ${localidad}`,
+      },
+      parentesco_seleccionado,
+    );
+
     resetear_formulario();
+  };
+
+  const get_municipios = (dep_id: number | string) => {
+    const dept = departamentos.find(
+      (d) => d.id.toString() === dep_id.toString(),
+    );
+    return dept?.ciudades || [];
   };
 
   const resetear_formulario = () => {
@@ -192,6 +239,8 @@ export default function PersonSearchForm({
     setNumeroDocumento("");
     setParentescoSeleccionado("");
     setGeneroSeleccionado("");
+    setDepartamentoSeleccionado("");
+    setMunicipioSeleccionado("");
     setPersonaEncontrada(null);
     setMostrarFormularioCompleto(false);
     setFormaPersona({
@@ -344,48 +393,86 @@ export default function PersonSearchForm({
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
-            <div className="md:col-span-2">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {showGenderField && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Género <span className="text-red-500">*</span>
-                    </label>
-                    <select
-                      value={genero_seleccionado}
-                      onChange={(e) => setGeneroSeleccionado(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                      {opciones_sexo.map((opcion) => (
-                        <option key={opcion.value} value={opcion.value}>
-                          {opcion.label}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                )}
 
-                {showRelationshipField && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Parentesco <span className="text-red-500">*</span>
-                    </label>
-                    <select
-                      value={parentesco_seleccionado}
-                      onChange={(e) =>
-                        setParentescoSeleccionado(e.target.value)
-                      }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                      {opciones_parentesco.map((opcion) => (
-                        <option key={opcion.value} value={opcion.value}>
-                          {opcion.label}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                )}
+            {showGenderField && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Género <span className="text-red-500">*</span>
+                </label>
+                <select
+                  value={genero_seleccionado}
+                  onChange={(e) => setGeneroSeleccionado(e.target.value)}
+                  disabled={!!persona_encontrada}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  {opciones_sexo.map((opcion) => (
+                    <option key={opcion.value} value={opcion.value}>
+                      {opcion.label}
+                    </option>
+                  ))}
+                </select>
               </div>
+            )}
+
+            {showRelationshipField && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Parentesco <span className="text-red-500">*</span>
+                </label>
+                <select
+                  value={parentesco_seleccionado}
+                  onChange={(e) => setParentescoSeleccionado(e.target.value)}
+                  disabled={!!persona_encontrada}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  {opciones_parentesco.map((opcion) => (
+                    <option key={opcion.value} value={opcion.value}>
+                      {opcion.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Departamento <span className="text-red-500">*</span>
+              </label>
+              <select
+                value={departamento_seleccionado}
+                onChange={(e) => {
+                  setDepartamentoSeleccionado(e.target.value);
+                  setMunicipioSeleccionado("");
+                }}
+                disabled={!!persona_encontrada}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Seleccionar departamento</option>
+                {departamentos.map((depto) => (
+                  <option key={depto.id} value={depto.id}>
+                    {depto.departamento}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Municipio <span className="text-red-500">*</span>
+              </label>
+              <select
+                value={municipio_seleccionado}
+                onChange={(e) => setMunicipioSeleccionado(e.target.value)}
+                disabled={!departamento_seleccionado || !!persona_encontrada}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
+              >
+                <option value="">Seleccionar municipio</option>
+                {get_municipios(departamento_seleccionado).map((municipio) => (
+                  <option key={municipio} value={municipio}>
+                    {municipio}
+                  </option>
+                ))}
+              </select>
             </div>
             <div className="md:col-span-2 border-t border-gray-200 pt-4">
               <label className="block text-sm font-medium text-gray-700 mb-1">

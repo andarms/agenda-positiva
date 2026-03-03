@@ -16,6 +16,12 @@ interface DatosEvento {
   ubicacion?: string;
 }
 
+interface DepartamentoData {
+  id: number;
+  departamento: string;
+  ciudades: string[];
+}
+
 interface PersonaData {
   nombres: string;
   apellidos: string;
@@ -94,6 +100,9 @@ export default function FormularioInscripcionPage() {
   const [datos_persona_existente, setDatosPersonaExistente] = useState<
     any | null
   >(null);
+  const [departamento_seleccionado, setDepartamentoSeleccionado] = useState("");
+  const [municipio_seleccionado, setMunicipioSeleccionado] = useState("");
+  const [departamentos, setDepartamentos] = useState<DepartamentoData[]>([]);
 
   // Get initial data from URL params
   const tipo_documento = searchParams.get("tipo_documento") || "";
@@ -126,6 +135,7 @@ export default function FormularioInscripcionPage() {
 
   useEffect(() => {
     cargar_datos_evento();
+    cargar_departamentos();
 
     if (!tipo_documento || !numero_documento) {
       router.push("/verificar");
@@ -134,6 +144,23 @@ export default function FormularioInscripcionPage() {
 
     cargar_datos_persona();
   }, []);
+
+  const cargar_departamentos = async () => {
+    try {
+      const response = await fetch("/colombia.min.json");
+      const data = await response.json();
+      setDepartamentos(data);
+    } catch (error) {
+      console.error("Error cargando departamentos:", error);
+    }
+  };
+
+  const get_municipios = (dep_id: string) => {
+    const dept = departamentos.find(
+      (d) => d.id.toString() === dep_id.toString(),
+    );
+    return dept?.ciudades || [];
+  };
 
   const cargar_datos_evento = async () => {
     try {
@@ -252,7 +279,8 @@ export default function FormularioInscripcionPage() {
       !datos_formulario.sexo ||
       !datos_formulario.fecha_nacimiento ||
       !datos_formulario.celular ||
-      !datos_formulario.localidad
+      !departamento_seleccionado ||
+      !municipio_seleccionado
     ) {
       alert("Por favor complete todos los campos obligatorios");
       return;
@@ -261,8 +289,14 @@ export default function FormularioInscripcionPage() {
     setEstaEnviando(true);
 
     try {
+      // Combinar departamento y municipio en localidad
+      const dept_obj = departamentos.find(
+        (d) => d.id.toString() === departamento_seleccionado,
+      );
+      const localidad_combinada = `${dept_obj?.departamento} / ${municipio_seleccionado}`;
+
       // Preparar datos para envío con lista unificada de familiares
-      const familiares_unificados = [];
+      const familiares_unificados: any[] = [];
 
       // Agregar parejas
       datos_formulario.parejas.forEach((pareja) => {
@@ -334,7 +368,7 @@ export default function FormularioInscripcionPage() {
         fecha_nacimiento: datos_formulario.fecha_nacimiento,
         celular: datos_formulario.celular,
         email: datos_formulario.email,
-        localidad: datos_formulario.localidad,
+        localidad: localidad_combinada,
         participa_primer_evento: datos_formulario.participa_primer_evento,
         requiere_hospedaje: datos_formulario.requiere_hospedaje,
         necesidades_especiales: datos_formulario.necesidades_especiales,
@@ -563,17 +597,43 @@ export default function FormularioInscripcionPage() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-zinc-700  mb-2">
-                      Localidad (Ciudad/Municipio) *
+                      Departamento *
                     </label>
-                    <input
-                      type="text"
-                      name="localidad"
-                      required
-                      value={datos_formulario.localidad}
-                      onChange={handleInputChange}
-                      placeholder="Ej: Bogotá, Medellín, Madrid"
+                    <select
+                      value={departamento_seleccionado}
+                      onChange={(e) => {
+                        setDepartamentoSeleccionado(e.target.value);
+                        setMunicipioSeleccionado("");
+                      }}
                       className="w-full px-3 py-2 border-2 border-zinc-300  rounded-lg bg-white  text-zinc-900  focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    />
+                    >
+                      <option value="">Seleccionar departamento</option>
+                      {departamentos.map((depto) => (
+                        <option key={depto.id} value={depto.id}>
+                          {depto.departamento}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-zinc-700  mb-2">
+                      Municipio *
+                    </label>
+                    <select
+                      value={municipio_seleccionado}
+                      onChange={(e) => setMunicipioSeleccionado(e.target.value)}
+                      disabled={!departamento_seleccionado}
+                      className="w-full px-3 py-2 border-2 border-zinc-300  rounded-lg bg-white  text-zinc-900  focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100"
+                    >
+                      <option value="">Seleccionar municipio</option>
+                      {get_municipios(departamento_seleccionado).map(
+                        (municipio) => (
+                          <option key={municipio} value={municipio}>
+                            {municipio}
+                          </option>
+                        ),
+                      )}
+                    </select>
                   </div>
                 </div>
 
@@ -644,7 +704,7 @@ export default function FormularioInscripcionPage() {
 
                           {/* Sección de pareja */}
                           {datos_formulario.viaja_con_pareja && (
-                            <div className="ml-6 mt-4">
+                            <div className="">
                               <FamilyMemberForm
                                 title="Pareja que viaja contigo"
                                 relationshipLabel="Pareja"
@@ -673,7 +733,7 @@ export default function FormularioInscripcionPage() {
 
                           {/* Sección de hijos */}
                           {datos_formulario.viaja_con_hijos && (
-                            <div className="ml-6 mt-4">
+                            <div className="">
                               <FamilyMemberForm
                                 title="Hijos que viajan contigo"
                                 relationshipLabel="Hijo"
@@ -704,7 +764,7 @@ export default function FormularioInscripcionPage() {
 
                           {/* Sección de otros familiares */}
                           {datos_formulario.viaja_con_otros_familiares && (
-                            <div className="ml-6 mt-4">
+                            <div className="">
                               <FamilyMemberForm
                                 title="Otros familiares que viajan contigo"
                                 relationshipLabel="Familiar"

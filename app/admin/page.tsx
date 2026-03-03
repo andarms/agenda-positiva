@@ -144,57 +144,6 @@ export default async function AdminPage() {
           </a>
         </div>
       )}
-
-      {/* Accesos rápidos */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-        <div className="bg-white border rounded-lg p-6">
-          <h3 className="text-lg font-semibold mb-3">Gestión de Eventos</h3>
-          <p className="text-gray-600 mb-4">
-            Administra eventos, activa/desactiva y revisa inscripciones.
-          </p>
-          0u{" "}
-          <div className="flex gap-2">
-            <a
-              href="/admin/eventos"
-              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded text-sm"
-            >
-              Ver Eventos
-            </a>
-            <a
-              href="/admin/eventos/crear"
-              className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded text-sm"
-            >
-              Crear Evento
-            </a>
-          </div>
-        </div>
-
-        <div className="bg-white border rounded-lg p-6">
-          <h3 className="text-lg font-semibold mb-3">Pre-inscripción</h3>
-          <p className="text-gray-600 mb-4">
-            Modelo de pre-inscripción para eventos futuros.
-          </p>
-          <a
-            href="/admin/pre-inscripcion"
-            className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded text-sm"
-          >
-            Ver Pre-inscripción
-          </a>
-        </div>
-
-        <div className="bg-white border rounded-lg p-6">
-          <h3 className="text-lg font-semibold mb-3">Portal Principal</h3>
-          <p className="text-gray-600 mb-4">
-            Vuelve al portal principal para usuarios.
-          </p>
-          <a
-            href="/"
-            className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded text-sm"
-          >
-            Ir al Portal
-          </a>
-        </div>
-      </div>
     </div>
   );
 }
