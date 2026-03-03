@@ -23,6 +23,20 @@ interface DatosFormulario {
   necesidades_especiales: string;
   esta_sirviendo: boolean;
   servicios: string[];
+  familiares?: Array<{
+    nombres: string;
+    apellidos: string;
+    tipo_documento: string;
+    numero_documento: string;
+    fecha_nacimiento: string;
+    celular: string;
+    email: string;
+    sexo: string;
+    localidad: string;
+    requiere_hospedaje: boolean;
+    necesidades_especiales: string;
+    relacion_con_lider: string;
+  }>;
 }
 
 export async function POST(
@@ -77,67 +91,38 @@ export async function POST(
     await db.insert($inscripciones).values({
       persona_id: persona_principal.id,
       evento_id: evento_id,
+      localidad: datos.localidad,
       requiere_hospedaje: datos.requiere_hospedaje ? 1 : 0,
       grupo_asistencia_id: grupo_id,
       relacion_con_lider: "lider",
       estado: "pendiente",
-      necesidades_especiales: datos.comentarios_hospedaje || null,
+      necesidades_especiales: datos.necesidades_especiales || null,
     });
 
     // 6. Procesar familiares si requiere hospedaje
-    if (datos.requiere_hospedaje) {
-      const familiares_a_inscribir = [];
-
-      // Procesar esposa
-      if (datos.esposa && datos.viaja_con_esposa) {
-        familiares_a_inscribir.push({
-          datos: datos.esposa,
-          relacion: "esposa",
-        });
-      }
-
-      // Procesar hijos
-      if (datos.hijos && datos.viaja_con_hijos) {
-        datos.hijos.forEach((hijo) => {
-          familiares_a_inscribir.push({
-            datos: hijo,
-            relacion: "hijo",
-          });
-        });
-      }
-
-      // Procesar otros familiares
-      if (datos.otros_familiares && datos.viaja_con_otro_familiar) {
-        datos.otros_familiares.forEach((familiar) => {
-          familiares_a_inscribir.push({
-            datos: familiar,
-            relacion: familiar.parentesco || "familiar",
-          });
-        });
-      }
-
+    if (datos.requiere_hospedaje && datos.familiares && datos.familiares.length > 0) {
       // Inscribir familiares
-      for (const familiar_info of familiares_a_inscribir) {
-        const familiar = familiar_info.datos;
-
-        if (familiar.cedula && familiar.nombres && familiar.apellidos) {
+      for (const familiar of datos.familiares) {
+        if (familiar.numero_documento && familiar.nombres && familiar.apellidos) {
           const persona_familiar = await crear_o_obtener_persona({
             nombres: familiar.nombres,
             apellidos: familiar.apellidos,
             fecha_nacimiento: familiar.fecha_nacimiento,
             telefono: familiar.celular,
-            email: "", // Los familiares pueden no tener email
+            email: familiar.email || "", // Los familiares pueden no tener email
             tipo_identificacion: familiar.tipo_documento,
-            numero_identificacion: familiar.cedula,
+            numero_identificacion: familiar.numero_documento,
           });
 
           await db.insert($inscripciones).values({
             persona_id: persona_familiar.id,
             evento_id: evento_id,
-            requiere_hospedaje: 1, // Todos los familiares requieren hospedaje si llegaron hasta acá
+            localidad: familiar.localidad || datos.localidad,
+            requiere_hospedaje: familiar.requiere_hospedaje ? 1 : 0,
             grupo_asistencia_id: grupo_id,
-            relacion_con_lider: familiar_info.relacion,
+            relacion_con_lider: familiar.relacion_con_lider,
             estado: "pendiente",
+            necesidades_especiales: familiar.necesidades_especiales || null,
           });
         }
       }

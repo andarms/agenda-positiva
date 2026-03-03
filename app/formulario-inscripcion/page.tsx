@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
@@ -93,6 +93,23 @@ const servicios_disponibles = [
 ];
 
 export default function FormularioInscripcionPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Cargando...</p>
+          </div>
+        </div>
+      }
+    >
+      <FormularioInscripcionContent />
+    </Suspense>
+  );
+}
+
+function FormularioInscripcionContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [esta_enviando, setEstaEnviando] = useState(false);
